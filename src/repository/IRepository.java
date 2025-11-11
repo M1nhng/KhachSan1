@@ -8,7 +8,7 @@ public interface IRepository<T> {
 
     T getById(String id);
 
-    T getByName(String ten);
+    List<T> findByName(String ten);
 
     boolean add(T entity);
 

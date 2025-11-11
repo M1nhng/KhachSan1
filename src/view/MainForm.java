@@ -93,10 +93,10 @@ public class MainForm extends JFrame {
 
             // Thiết lập 'cnt' của Person.java thành giá trị (lớn nhất + 1)
             Person.setCnt(maxId + 1);
-            System.out.println("Dong bo ID counter thanh cong. Gia tri bat dau: " + (maxId + 1));
+            // System.out.println("Dong bo ID counter thanh cong. Gia tri bat dau: " + (maxId + 1));
 
         } catch (SQLException e) {
-            System.err.println("Loi khi dong bo ID counter! Dat gia tri mac dinh = 1.");
+            // System.err.println("Loi khi dong bo ID counter! Dat gia tri mac dinh = 1.");
             e.printStackTrace();
             Person.setCnt(1); // Quay về mặc định nếu lỗi CSDL
         }

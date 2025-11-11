@@ -45,22 +45,25 @@ public class KhachHangRepository implements IKhachHangRepository {
     }
 
     @Override
-    public KhachHang getByName(String ten) {
-        String sql = "SELECT * FROM khachhang WHERE Ten like ?";
+    public List<KhachHang> findByName(String ten) {
+        List<KhachHang> dsKhachHang = new ArrayList<>();
+        // Sửa SQL: Dùng LIKE ?
+        String sql = "SELECT * FROM khachhang WHERE Ten LIKE ?";
 
         try (Connection conn = DatabaseConnection.getConnection();
                 PreparedStatement ps = conn.prepareStatement(sql)) {
 
-            ps.setString(1, ten);
+            ps.setString(1, "%" + ten + "%");
+
             try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    return mapResultSetToKhachHang(rs);
+                while (rs.next()) {
+                    dsKhachHang.add(mapResultSetToKhachHang(rs));
                 }
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return null;
+        return dsKhachHang; // Trả về danh sách (có thể rỗng)
     }
 
     @Override

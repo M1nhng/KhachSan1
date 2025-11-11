@@ -156,7 +156,7 @@ public class App {
                     String ten = sc.nextLine();
 
                     // Sử dụng phương thức getById từ repository
-                    KhachHang kh = khachHangRepo.getByName(ten);
+                    List<KhachHang> kh = khachHangRepo.findByName(ten);
 
                     if (kh != null) {
                         System.out.println("Da tim thay khach hang:");
