@@ -161,6 +161,14 @@ public class KhachHangPanel extends JPanel {
             JOptionPane.showMessageDialog(this, "Tên và CMND không được để trống!", "Lỗi", JOptionPane.ERROR_MESSAGE);
             return;
         }
+        if(cmnd.length() != 12){
+            JOptionPane.showMessageDialog(this, "So CMND phai du 12 so!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        if(sdt.length() != 10){
+            JOptionPane.showMessageDialog(this, "So dien thoai phai du 10 so!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
 
         // Dùng constructor tạo ID tự động
         KhachHang kh = new KhachHang(ten, cmnd, sdt, email);

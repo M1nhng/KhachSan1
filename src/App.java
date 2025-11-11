@@ -54,11 +54,11 @@ public class App {
         int choice;
         do {
             System.out.println("\n===== QUAN LY KHACH HANG =====");
-            System.out.println("1. Them khach hang (Luu vao CSDL)");
-            System.out.println("2. Xoa khach hang (Xoa khoi CSDL)");
-            System.out.println("3. Sua thong tin khach hang (Cap nhat CSDL)");
-            System.out.println("4. Xem danh sach khach hang (Doc tu CSDL)");
-            System.out.println("5. Tim kiem khach hang theo Ma (Doc tu CSDL)"); 
+            System.out.println("1. Them khach hang ");
+            System.out.println("2. Xoa khach hang ");
+            System.out.println("3. Sua thong tin khach hang ");
+            System.out.println("4. Xem danh sach khach hang ");
+            System.out.println("5. Tim kiem khach hang "); 
             System.out.println("0. Quay lai");
             System.out.print("Chon: ");
             choice = Integer.parseInt(sc.nextLine());
@@ -96,7 +96,6 @@ public class App {
                     }
                 }
                 case 3 -> {
-                    // ... (Code Sửa khách hàng giữ nguyên) ...
                     System.out.print("Nhap ma khach hang can sua: ");
                     String id = sc.nextLine();
 
@@ -140,7 +139,7 @@ public class App {
                     List<KhachHang> dsTuDB = khachHangRepo.getAll();
 
                     if (dsTuDB.isEmpty()) {
-                        System.out.println("Chua co khach hang nao trong CSDL!");
+                        System.out.println("Chua co khach hang nao ");
                         break; 
                     }
 
@@ -153,17 +152,17 @@ public class App {
 
                 // ===== CHỨC NĂNG MỚI =====
                 case 5 -> {
-                    System.out.print("Nhap ma khach hang can tim (vi du: KH001): ");
-                    String id = sc.nextLine();
+                    System.out.print("Nhap ten khach hang can tim: ");
+                    String ten = sc.nextLine();
 
                     // Sử dụng phương thức getById từ repository
-                    KhachHang kh = khachHangRepo.getById(id);
+                    KhachHang kh = khachHangRepo.getByName(ten);
 
                     if (kh != null) {
                         System.out.println("Da tim thay khach hang:");
                         System.out.println(kh); // In thông tin khách hàng
                     } else {
-                        System.out.println("Khong tim thay khach hang co ma: " + id);
+                        System.out.println("Khong tim thay khach hang co ten: " + ten);
                     }
                 }
                 // ==========================

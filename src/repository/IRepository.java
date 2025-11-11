@@ -8,6 +8,8 @@ public interface IRepository<T> {
 
     T getById(String id);
 
+    T getByName(String ten);
+
     boolean add(T entity);
 
     boolean update(T entity);

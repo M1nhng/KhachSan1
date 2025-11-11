@@ -2,6 +2,12 @@ package view; // Bạn có thể đặt tên package là View, UI, or GiaoDien
 
 import javax.swing.*;
 import java.awt.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import Class.Person; 
+import repository.DatabaseConnection;
 
 // Import các repository bạn cần
 import repository.IKhachHangRepository;
@@ -66,15 +72,45 @@ public class MainForm extends JFrame {
         panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
         return panel;
     }
+    
+    private static void dongBoIdCounter() {
+        int maxId = 0;
+        // Câu SQL này lấy ID SỐ lớn nhất từ cả 2 bảng
+        // (Bằng cách cắt bỏ 'KH', 'NV' và chuyển sang số)
+        String sql = "SELECT MAX(IdNumber) FROM (" +
+                "  SELECT CAST(SUBSTRING(MaKH, 3) AS UNSIGNED) AS IdNumber FROM khachhang " +
+                "  UNION " +
+                "  SELECT CAST(SUBSTRING(MaNV, 3) AS UNSIGNED) AS IdNumber FROM nhanvien" +
+                ") AS AllIds";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+                PreparedStatement ps = conn.prepareStatement(sql);
+                ResultSet rs = ps.executeQuery()) {
+
+            if (rs.next()) {
+                maxId = rs.getInt(1); // Lấy ID lớn nhất
+            }
+
+            // Thiết lập 'cnt' của Person.java thành giá trị (lớn nhất + 1)
+            Person.setCnt(maxId + 1);
+            System.out.println("Dong bo ID counter thanh cong. Gia tri bat dau: " + (maxId + 1));
+
+        } catch (SQLException e) {
+            System.err.println("Loi khi dong bo ID counter! Dat gia tri mac dinh = 1.");
+            e.printStackTrace();
+            Person.setCnt(1); // Quay về mặc định nếu lỗi CSDL
+        }
+    }
 
     /**
      * Phương thức Main để chạy ứng dụng
      */
     public static void main(String[] args) {
-        // Đảm bảo đồng bộ ID trước khi chạy (nếu cần)
-        // Ghi chú: Việc đồng bộ Person.cnt
-        // cần được xử lý cẩn thận hơn khi dùng CSDL
-        // (ví dụ: lấy ID lớn nhất từ CSDL khi khởi động)
+
+        // ===== BƯỚC FIX LỖI TRÙNG KEY =====
+        // Đồng bộ ID counter từ CSDL trước khi làm bất cứ điều gì khác
+        dongBoIdCounter();
+        // ===================================
 
         // Chạy giao diện
         SwingUtilities.invokeLater(() -> {

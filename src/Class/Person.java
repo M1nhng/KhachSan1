@@ -8,21 +8,17 @@ public class Person {
 
     protected static int cnt = 1;
 
-    // ===== CONSTRUCTORS =====
 
-    // (MỚI) 1. Constructor rỗng: Cần thiết cho Repository
     public Person() {
-        // Để trống cho việc mapping dữ liệu từ CSDL
+       
     }
 
-    // (CŨ) 2. Constructor tự tạo ID tăng dần
     public Person(String prefix) {
         this.maID = String.format("%s%03d", prefix, cnt++);
     }
 
-    // (CŨ) 3. Constructor đầy đủ thông tin (khi thêm mới)
     public Person(String prefix, String ten, String soCMND, String soDienThoai) {
-        this(prefix); // Gọi constructor (2) để tự tạo maID
+        this(prefix);
         setTen(ten);
         setSoCMND(soCMND);
         setSoDienThoai(soDienThoai);
@@ -45,10 +41,6 @@ public class Person {
         return soDienThoai;
     }
 
-    // ===== SETTER =====
-
-    // (MỚI) Rất quan trọng: Thêm hàm này
-    // để Repository có thể set ID khi đọc từ CSDL
     public void setMaID(String maID) {
         this.maID = maID;
     }
