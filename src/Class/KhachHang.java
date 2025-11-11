@@ -115,7 +115,7 @@ public class KhachHang extends Person {
 
     public static void xemKhachHang() {
         if (dsKhachHang.isEmpty()) {
-            System.out.println("⚠️ Chua co khach hang nao!");
+            System.out.println("Chua co khach hang nao!");
             return;
         }
 

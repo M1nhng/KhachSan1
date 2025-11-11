@@ -141,7 +141,7 @@ public class App {
 
                     if (dsTuDB.isEmpty()) {
                         System.out.println("Chua co khach hang nao trong CSDL!");
-                        break; // Sửa: Dùng break
+                        break; 
                     }
 
                     System.out.println("\n===== DANH SACH KHACH HANG =====");

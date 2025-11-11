@@ -46,7 +46,7 @@ public class KhachHangRepository implements IKhachHangRepository {
 
     @Override
     public KhachHang getById(String id) {
-        String sql = "SELECT * FROM khachhang WHERE MaKH = ?"; //
+        String sql = "SELECT * FROM khachhang WHERE MaKH = ?";
 
         try (Connection conn = DatabaseConnection.getConnection();
                 PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -87,7 +87,7 @@ public class KhachHangRepository implements IKhachHangRepository {
 
     @Override
     public boolean update(KhachHang kh) {
-        String sql = "UPDATE khachhang SET Ten = ?, SoCMND = ?, SoDienThoai = ?, Email = ? WHERE MaKH = ?"; //
+        String sql = "UPDATE khachhang SET Ten = ?, SoCMND = ?, SoDienThoai = ?, Email = ? WHERE MaKH = ?";
 
         try (Connection conn = DatabaseConnection.getConnection();
                 PreparedStatement ps = conn.prepareStatement(sql)) {
