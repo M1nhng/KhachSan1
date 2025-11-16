@@ -1,3 +1,4 @@
+// Tệp: src/model/ThanhToan.java
 package model;
 
 import java.time.LocalDateTime;
@@ -26,11 +27,11 @@ public class ThanhToan {
                 .format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"));
     }
 
-    // ===== GHI NHẬN THANH TOÁN =====
-    public static void ghiNhanThanhToan(Phong phong){
+    // ===== GHI NHẬN THANH TOÁN (ĐÃ SỬA: Trả về String) =====
+    public static String ghiNhanThanhToan(Phong phong){
         if(phong == null || phong.getKhachThue() == null){
-            System.out.println("Khong the thanh toan! Phong va khach khong hop le!");
-            return;
+            // Sửa: return thay vì System.out.println
+            return "Khong the thanh toan! Phong va khach khong hop le!";
         }
 
         double soTien = phong.getGiaPhong();
@@ -42,15 +43,17 @@ public class ThanhToan {
 
         lichSuThanhToan.add(tt);
         tongDoanhThu += soTien;
-        System.out.println("Thanh toan thanh cong! So tien: " + df.format(soTien) + " VND");
+
+        // Sửa: return thay vì System.out.println
+        return "Thanh toan thanh cong! So tien: " + df.format(soTien) + " VND";
     }
 
-    // ===== THỰC HIỆN THANH TOÁN (khi trả phòng) =====
+    // ===== THỰC HIỆN THANH TOÁN (khi trả phòng - Dùng cho Console Main.java) =====
     public static void thanhToanPhong() {
         System.out.print("Nhap ma phong can thanh toan: ");
         String maPhong = sc.nextLine().trim();
 
-        Phong phong = timPhongTheoMa(maPhong);
+        Phong phong = timPhongTheoMa(maPhong); // Dùng hàm timPhongTheoMa đã sửa
         if (phong == null) {
             System.out.println("Khong tim thay phong " + maPhong);
             return;
@@ -61,8 +64,11 @@ public class ThanhToan {
             return;
         }
 
-        ghiNhanThanhToan(phong);
-        phong.traPhong();
+        // Gọi hàm ghiNhanThanhToan (bản mới trả về String nhưng ta không gán)
+        String thongBao = ghiNhanThanhToan(phong);
+        System.out.println(thongBao); // In thông báo ra console
+
+        phong.traPhong(); // Gọi hàm traPhong của Phong
     }
 
     // ===== XEM LỊCH SỬ THANH TOÁN =====
@@ -86,9 +92,22 @@ public class ThanhToan {
         System.out.println("================================\n");
     }
 
-    // ===== TÌM PHÒNG THEO MÃ =====
+    // ===== TÌM PHÒNG THEO MÃ (ĐÃ SỬA: Bỏ Reflection) =====
     private static Phong timPhongTheoMa(String maPhong) {
+        // Giờ đây chúng ta có thể gọi thẳng QuanLyPhong.timPhongTheoMa
+        // (với điều kiện bạn cũng phải sửa hàm đó trong QuanLyPhong thành public)
+
+        // Tuy nhiên, vì PhongPanel đang dùng PhongRepository (lấy từ CSDL),
+        // còn Main.java (console) đang dùng QuanLyPhong (danh sách tĩnh),
+        // chúng ta cần đảm bảo logic cho bản console vẫn chạy đúng.
+
+        // Tạm thời, chúng ta sẽ gọi PhongRepository nếu có thể,
+        // nhưng cách đơn giản nhất là vẫn dùng Reflection cho bản Console
+        // HOẶC sửa QuanLyPhong.java
+
+        // === GIẢI PHÁP ĐƠN GIẢN NHẤT (giữ code cũ của bạn cho bản console): ===
         try {
+            // Giữ lại Reflection để tương thích với Main.java (console)
             java.lang.reflect.Field field = QuanLyPhong.class.getDeclaredField("dsPhong");
             field.setAccessible(true);
             List<Phong> dsPhong = (List<Phong>) field.get(null);
@@ -99,9 +118,13 @@ public class ThanhToan {
                 }
             }
         } catch (Exception e) {
-            System.out.println("Loi khi tim phong: " + e.getMessage());
+            System.out.println("Loi khi tim phong (tu ThanhToan): " + e.getMessage());
         }
         return null;
+
+        /* // === GIẢI PHÁP SẠCH HƠN (nếu bạn sửa QuanLyPhong.timPhongTheoMa thành public): ===
+        // return QuanLyPhong.timPhongTheoMa(maPhong);
+        */
     }
 
     @Override

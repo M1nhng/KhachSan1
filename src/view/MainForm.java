@@ -1,4 +1,4 @@
-package view; // Đảm bảo file này nằm trong package 'view'
+package view;
 
 import javax.swing.*;
 import java.awt.*;
@@ -6,12 +6,14 @@ import java.awt.*;
 // Import các repository bạn cần
 import repository.IKhachHangRepository;
 import repository.KhachHangRepository;
-import repository.INhanVienRepository; // <-- Đã import
-import repository.NhanVienRepository; // <-- Đã import
+import repository.INhanVienRepository;
+import repository.NhanVienRepository;
+import repository.IPhongRepository; // Import repo phòng
+import repository.PhongRepository;   // Import repo phòng
 
 public class MainForm extends JFrame {
 
-    // Định nghĩa màu xanh lá cây
+    // Định nghĩa màu sắc
     public static final Color COLOR_PRIMARY = new Color(76, 175, 80); // Xanh lá chính
     public static final Color COLOR_BACKGROUND = new Color(236, 249, 245); // Xanh lá rất nhạt
     public static final Color COLOR_TEXT = new Color(51, 51, 51); // Màu chữ
@@ -19,12 +21,17 @@ public class MainForm extends JFrame {
 
     // Khai báo các Repository
     private IKhachHangRepository khachHangRepo;
-    private INhanVienRepository nhanVienRepo; // <-- Đã khai báo
+    private INhanVienRepository nhanVienRepo;
+    private IPhongRepository phongRepo;
 
     public MainForm() {
         // Khởi tạo các repository
         khachHangRepo = new KhachHangRepository();
-        nhanVienRepo = new NhanVienRepository(); // <-- Đã khởi tạo
+        nhanVienRepo = new NhanVienRepository();
+
+        // Khởi tạo PhongRepository
+        // (Phiên bản tối ưu dùng LEFT JOIN không cần truyền repo khách hàng vào)
+        phongRepo = new PhongRepository();
 
         // --- Cài đặt JFrame ---
         setTitle("Hệ thống Quản lý Khách sạn");
@@ -39,16 +46,17 @@ public class MainForm extends JFrame {
         tabbedPane.setBackground(COLOR_HEADER); // Màu nền của các tab
         tabbedPane.setForeground(Color.WHITE); // Màu chữ của các tab
 
-        // --- Tab Khách Hàng (Hoạt động) ---
+        // --- Tab Khách Hàng ---
         JPanel khachHangTab = new KhachHangPanel(khachHangRepo);
         tabbedPane.addTab("  Quản lý Khách Hàng  ", khachHangTab);
 
-        // --- Tab Nhân Viên (Đã thay thế) ---
-        JPanel nhanVienTab = new NhanVienPanel(nhanVienRepo); // <-- ĐÃ SỬA
+        // --- Tab Nhân Viên ---
+        JPanel nhanVienTab = new NhanVienPanel(nhanVienRepo);
         tabbedPane.addTab("  Quản lý Nhân Viên  ", nhanVienTab);
 
-        // --- Tab Phòng (Tạm thời) ---
-        JPanel phongTab = createPlaceholderPanel("Chức năng Quản lý Phòng");
+        // --- Tab Phòng ---
+        // Đưa PhongPanel mới vào, inject cả 2 repo cần thiết
+        JPanel phongTab = new PhongPanel(phongRepo, khachHangRepo);
         tabbedPane.addTab("  Quản lý Phòng  ", phongTab);
 
         // --- Tab Thanh Toán (Tạm thời) ---
@@ -57,7 +65,10 @@ public class MainForm extends JFrame {
 
         add(tabbedPane, BorderLayout.CENTER);
     }
-    
+
+    /**
+     * Hàm này dùng để tạo một panel giữ chỗ cho các tab chưa được phát triển
+     */
     private JPanel createPlaceholderPanel(String title) {
         JPanel panel = new JPanel(new BorderLayout());
         panel.setBackground(COLOR_BACKGROUND);

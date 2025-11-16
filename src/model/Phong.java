@@ -1,3 +1,4 @@
+// Tệp: src/model/Phong.java
 package model;
 
 import java.text.DecimalFormat;
@@ -10,6 +11,10 @@ public class Phong {
     private KhachHang KhachThue;
 
     private static final DecimalFormat df = new DecimalFormat("#,###");
+
+    // (MỚI) Constructor rỗng
+    public Phong() {
+    }
 
     public Phong(String maPhong, String loaiPhong, double giaPhong, boolean trangThai) {
         setMaPhong(maPhong);
@@ -60,28 +65,31 @@ public class Phong {
         this.KhachThue = khach;
     }
 
-    // ===== ĐẶT PHÒNG =====
-    public boolean datPhong(KhachHang khach) {
+    // ===== ĐẶT PHÒNG (SỬA ĐỔI) =====
+    // Sửa: Trả về String thay vì boolean và System.out.println
+    public String datPhong(KhachHang khach) {
         if (trangThai) {
-            System.out.println("Phong " + maPhong + " da co nguoi thue!");
-            return false;
+            return "Phong " + maPhong + " da co nguoi thue!";
+        }
+        if(khach == null) {
+            return "Khach hang khong hop le!";
         }
         this.trangThai = true;
         this.KhachThue = khach;
-        System.out.println("Phong " + maPhong + " da duoc dat cho khach: " + khach.getTen());
-        return true;
+        return "Phong " + maPhong + " da duoc dat cho khach: " + khach.getTen();
     }
 
-    // ===== TRẢ PHÒNG =====
-    public boolean traPhong() {
+    // ===== TRẢ PHÒNG (SỬA ĐỔI) =====
+    // Sửa: Trả về String thay vì boolean và System.out.println
+    public String traPhong() {
         if (!trangThai) {
-            System.out.println("Phong " + maPhong + " dang trong!");
-            return false;
+            return "Phong " + maPhong + " dang trong!";
         }
+        String tenKhachCu = (this.KhachThue != null) ? this.KhachThue.getTen() : "[Khong ro]";
+
         this.trangThai = false;
-        System.out.println("Phong " + maPhong + " da duoc tra.");
         this.KhachThue = null;
-        return true;
+        return "Phong " + maPhong + " da duoc tra boi " + tenKhachCu + ".";
     }
 
     @Override
