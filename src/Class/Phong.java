@@ -20,6 +20,10 @@ public class Phong {
         setTrangThai(trangThai);
     }
 
+    public Phong() {
+        
+    }
+
     public String getMaPhong() {
         return maPhong;
     }
@@ -71,31 +75,27 @@ public class Phong {
     }
 
     // ===== ĐẶT PHÒNG =====
-    public boolean datPhong(KhachHang khach) {
+    public String datPhong(KhachHang khach) {
         if (trangThai) {
-            System.out.println("Phong " + maPhong + " da co nguoi thue!");
-            return false;
+            return "Phong " + maPhong + " da co nguoi thue!";
         }
         this.trangThai = true;
         this.KhachThue = khach;
         this.thoiGianDatPhong = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy, HH:mm:ss"));
 
-        System.out.println("Phong " + maPhong + " da duoc dat cho khach: " + khach.getTen());
-        System.out.println("Thoi gian dat phong: " + this.thoiGianDatPhong);
-        return true;
+        return "Phong " + maPhong + " da duoc dat cho khach: " + khach.getTen() +
+        ", Thoi gian dat phong: " + this.thoiGianDatPhong;
     }
 
     // ===== TRẢ PHÒNG =====
-    public boolean traPhong() {
+    public String traPhong() {
         if (!trangThai) {
-            System.out.println("Phong " + maPhong + " dang trong!");
-            return false;
+            return "Phong " + maPhong + " dang trong!";
         }
         this.trangThai = false;
-        System.out.println("Phong " + maPhong + " da duoc tra.");
         this.KhachThue = null;
         this.thoiGianDatPhong = null;
-        return true;
+        return "Phong " + maPhong + " da duoc tra.";
     }
 
     @Override

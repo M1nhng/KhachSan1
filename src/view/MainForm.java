@@ -1,4 +1,4 @@
-package view; // Bạn có thể đặt tên package là View, UI, or GiaoDien
+package view; 
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,6 +12,8 @@ import repository.DatabaseConnection;
 // Import các repository bạn cần
 import repository.IKhachHangRepository;
 import repository.KhachHangRepository;
+import repository.IPhongRepository;
+import repository.PhongRepository;
 // import repository.INhanVienRepository; // (sẽ cần sau)
 // import repository.NhanVienRepository; // (sẽ cần sau)
 
@@ -25,12 +27,14 @@ public class MainForm extends JFrame {
 
     // Khai báo các Repository
     private IKhachHangRepository khachHangRepo;
+    private IPhongRepository phongRepo;
     // private INhanVienRepository nhanVienRepo; // (sẽ cần sau)
 
     public MainForm() {
         // Khởi tạo các repository
         khachHangRepo = new KhachHangRepository();
         // nhanVienRepo = new NhanVienRepository(); // (sẽ cần sau)
+        phongRepo = new PhongRepository();
 
         // --- Cài đặt JFrame ---
         setTitle("Hệ thống Quản lý Khách sạn");
@@ -51,8 +55,9 @@ public class MainForm extends JFrame {
         JPanel nhanVienTab = createPlaceholderPanel("Chức năng Quản lý Nhân viên");
         tabbedPane.addTab("  Quản lý Nhân Viên  ", nhanVienTab);
 
-       
-        JPanel phongTab = createPlaceholderPanel("Chức năng Quản lý Phòng");
+        // SỬA: Thay thế panel giữ chỗ bằng PhongPanel thật
+        // Truyền các repository cần thiết vào constructor của PhongPanel
+        JPanel phongTab = new PhongPanel(phongRepo, khachHangRepo);
         tabbedPane.addTab("  Quản lý Phòng  ", phongTab);
 
 

@@ -43,11 +43,6 @@ public class QuanLyPhong {
             return;
         }
 
-        if (phong.isTrangThai()) {
-            System.out.println("Phong nay da co nguoi thue!");
-            return;
-        }
-
         System.out.print("Nhap ma khach hang dat phong: ");
         String maKH = sc.nextLine().trim();
 
@@ -57,9 +52,8 @@ public class QuanLyPhong {
             return;
         }
 
-        if (phong.datPhong(kh)) {
-            System.out.println("Dat phong thanh cong cho khach: " + kh.getTen());
-        }
+        String ketQua = phong.datPhong(kh);
+        System.out.println(ketQua);
     }
 
     // ===== TRẢ PHÒNG =====
@@ -73,32 +67,34 @@ public class QuanLyPhong {
             return;
         }
 
-        if (!phong.isTrangThai()) {
-            System.out.println("Phong nay dang trong, khong the tra!");
-            return;
-        }
+        String ketQuaTraPhong = phong.traPhong();
+        System.out.println(ketQuaTraPhong);
 
-        ThanhToan.ghiNhanThanhToan(phong);
-        phong.traPhong();
+        if (!ketQuaTraPhong.contains("dang trong")) {
+            String ketQuaThanhToan = ThanhToan.ghiNhanThanhToan(phong);
+            System.out.println(ketQuaThanhToan);
+        }
     }
     //==== Xoa Phong =====
-    public static void xoaPhong(){
+    public static void xoaPhong() {
         System.out.print("Nhap ma phong can xoa: ");
         String maPhong = sc.nextLine().trim();
-        
+
         Phong phong = timPhongTheoMa(maPhong);
-         if (phong == null) {
+        if (phong == null) {
             System.out.println("Khong tim thay phong " + maPhong);
             return;
         }
-        if (!phong.isTrangThai()) {
-            System.out.println("Phong nay dang trong, khong the xoa!");
+
+        // SỬA LOGIC: Chỉ được xóa phòng TRỐNG
+        if (phong.isTrangThai()) {
+            System.out.println("Phong nay dang co nguoi thue, khong the xoa!");
             return;
         }
-        if (phong.traPhong()) {
-            System.out.println("Xoa phong thanh cong!");
-        }        
 
+        // SỬA LỖI: Bỏ hàm if(phong.traPhong())
+        dsPhong.remove(phong); // Xóa thẳng khỏi danh sách
+        System.out.println("Xoa phong " + maPhong + " thanh cong!");
     }
 
     // ===== XEM KHÁCH ĐANG Ở PHÒNG =====
@@ -127,8 +123,9 @@ public class QuanLyPhong {
         System.out.println("================================\n");
     }
 
-    // ===== TÌM PHÒNG THEO MÃ =====
-    private static Phong timPhongTheoMa(String maPhong) {
+    // ===== TÌM PHÒNG THEO MÃ (SỬA: thành public để ThanhToan.java có thể dùng)
+    // =====
+    public static Phong timPhongTheoMa(String maPhong) {
         for (Phong p : dsPhong) {
             if (p.getMaPhong().equalsIgnoreCase(maPhong)) {
                 return p;

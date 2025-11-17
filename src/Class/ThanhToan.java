@@ -19,7 +19,7 @@ public class ThanhToan {
     private String thoiGianDatPhong;
     private String thoiGianTraPhong;
 
-    public ThanhToan(String maPhong, String tenKhach, double soTien, String thoiGianDatPhong) {
+    public ThanhToan(String maPhong, String tenKhach, double soTien) {
         this.maPhong = maPhong;
         this.tenKhach = tenKhach;
         this.soTien = soTien;
@@ -29,19 +29,19 @@ public class ThanhToan {
     }
 
     // ===== GHI NHẬN THANH TOÁN =====
-    public static void ghiNhanThanhToan(Phong phong){
-        if(phong == null || phong.getKhachThue() == null){
-            System.out.println("Khong the thanh toan! Phong va khach khong hop le!");
-            return;
+    public static String ghiNhanThanhToan(Phong phong) {
+        if (phong == null || phong.getKhachThue() == null) {
+            // Sửa: return thay vì System.out.println
+            return "Khong the thanh toan! Phong va khach khong hop le!";
         }
-        
-        double soTien = phong.getGiaPhong(); 
-        ThanhToan tt = new ThanhToan(phong.getMaPhong(), phong.getKhachThue().getTen(), soTien, phong.getThoiGianDatPhong());
-            
+
+        double soTien = phong.getGiaPhong();
+        ThanhToan tt = new ThanhToan(phong.getMaPhong(), phong.getKhachThue().getTen(), soTien);
+
         lichSuThanhToan.add(tt);
         tongDoanhThu += soTien;
-        System.out.println("Thanh toan thanh cong! So tien: " + df.format(soTien) + " VND");
-        System.out.println("Thoi gian tra phong: " + tt.thoiGianTraPhong);
+
+        return "Thanh toan thanh cong! So tien: " + df.format(soTien) + " VND";
     }
 
     // ===== THỰC HIỆN THANH TOÁN (khi trả phòng) =====

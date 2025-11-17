@@ -72,7 +72,7 @@ public class KhachHangPanel extends JPanel {
         btnThem = CustomStyler.createStyledButton("Thêm Mới");
         btnSua = CustomStyler.createStyledButton("Cập Nhật");
         btnXoa = CustomStyler.createStyledButton("Xóa");
-        btnLamMoi = CustomStyler.createStyledButton("Làm Mới Form");
+        btnLamMoi = CustomStyler.createStyledButton("Làm Mới");
 
         buttonPanel.add(btnThem);
         buttonPanel.add(btnSua);
@@ -98,7 +98,7 @@ public class KhachHangPanel extends JPanel {
         searchPanel.add(btnTimKiem);
 
         // --- Panel Bảng (Đặt ở giữa tablePanel) ---
-        String[] columnNames = { "Tên", "CMND", "SĐT", "Email" };
+        String[] columnNames = { "MaKH","Tên", "CMND", "SĐT", "Email" };
         model = new DefaultTableModel(columnNames, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -161,6 +161,7 @@ public class KhachHangPanel extends JPanel {
         List<KhachHang> customers = khachHangRepo.getAll();
         for (KhachHang kh : customers) {
             model.addRow(new Object[] {
+                    kh.getMaID(),
                     kh.getTen(),
                     kh.getSoCMND(),
                     kh.getSoDienThoai(),
