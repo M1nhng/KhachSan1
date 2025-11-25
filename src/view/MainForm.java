@@ -1,4 +1,4 @@
-package view; 
+package view;
 
 import javax.swing.*;
 import java.awt.*;
@@ -6,61 +6,61 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import Class.Person; 
+import Class.Person;
 import repository.DatabaseConnection;
 
-// Import các repository bạn cần
 import repository.IKhachHangRepository;
 import repository.KhachHangRepository;
 import repository.IPhongRepository;
 import repository.PhongRepository;
-// import repository.INhanVienRepository; // (sẽ cần sau)
-// import repository.NhanVienRepository; // (sẽ cần sau)
+// Import mới
+import repository.INhanVienRepository;
+import repository.NhanVienRepository;
 
 public class MainForm extends JFrame {
 
-    // Định nghĩa màu xanh lá cây
-    public static final Color COLOR_PRIMARY = new Color(76, 175, 80); // Xanh lá chính
-    public static final Color COLOR_BACKGROUND = new Color(236, 249, 245); // Xanh lá rất nhạt
-    public static final Color COLOR_TEXT = new Color(51, 51, 51); // Màu chữ
-    public static final Color COLOR_HEADER = new Color(56, 142, 60); // Xanh lá đậm cho header
+    public static final Color COLOR_PRIMARY = new Color(76, 175, 80);
+    public static final Color COLOR_BACKGROUND = new Color(236, 249, 245);
+    public static final Color COLOR_TEXT = new Color(51, 51, 51);
+    public static final Color COLOR_HEADER = new Color(56, 142, 60);
 
-    // Khai báo các Repository
     private IKhachHangRepository khachHangRepo;
     private IPhongRepository phongRepo;
-    // private INhanVienRepository nhanVienRepo; // (sẽ cần sau)
+    private INhanVienRepository nhanVienRepo; // Khai báo Repo
 
     public MainForm() {
-        // Khởi tạo các repository
         khachHangRepo = new KhachHangRepository();
-        // nhanVienRepo = new NhanVienRepository(); // (sẽ cần sau)
         phongRepo = new PhongRepository();
+        nhanVienRepo = new NhanVienRepository(); // Khởi tạo Repo
 
-        // --- Cài đặt JFrame ---
         setTitle("Hệ thống Quản lý Khách sạn");
         setSize(1200, 800);
-        setLocationRelativeTo(null); // Giữa màn hình
+        setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
-        // --- Tạo JTabbedPane ---
         JTabbedPane tabbedPane = new JTabbedPane();
         tabbedPane.setFont(new Font("Segoe UI", Font.BOLD, 16));
-        tabbedPane.setBackground(COLOR_HEADER); // Màu nền của các tab
-        tabbedPane.setForeground(Color.WHITE); // Màu chữ của các tab
+        tabbedPane.setBackground(COLOR_HEADER);
+        tabbedPane.setForeground(Color.WHITE);
 
+        // Tab 1: Khách Hàng
         JPanel khachHangTab = new KhachHangPanel(khachHangRepo);
         tabbedPane.addTab("  Quản lý Khách Hàng  ", khachHangTab);
 
-        JPanel nhanVienTab = createPlaceholderPanel("Chức năng Quản lý Nhân viên");
+        // Tab 2: Nhân Viên (MỚI - Dùng Panel thật)
+        JPanel nhanVienTab = new NhanVienPanel(nhanVienRepo);
         tabbedPane.addTab("  Quản lý Nhân Viên  ", nhanVienTab);
 
-        // SỬA: Thay thế panel giữ chỗ bằng PhongPanel thật
-        // Truyền các repository cần thiết vào constructor của PhongPanel
+        // Tab 3: Phòng
         JPanel phongTab = new PhongPanel(phongRepo, khachHangRepo);
         tabbedPane.addTab("  Quản lý Phòng  ", phongTab);
 
+        // Tab 4: Dịch vụ
+        JPanel dichVuTab = createPlaceholderPanel("Chức năng Quản lý Dịch vụ");
+        tabbedPane.addTab("  Dịch vụ  ", dichVuTab);
 
+        // Tab 5: Thanh toán
         JPanel thanhToanTab = createPlaceholderPanel("Chức năng Quản lý Thanh Toán");
         tabbedPane.addTab("  Thanh toán & Doanh thu  ", thanhToanTab);
 
@@ -74,14 +74,14 @@ public class MainForm extends JFrame {
         label.setFont(new Font("Segoe UI", Font.BOLD, 24));
         label.setForeground(COLOR_PRIMARY);
         panel.add(label, BorderLayout.CENTER);
-        panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
         return panel;
     }
-    
+
+    // ===== HÀM FIX LỖI TRÙNG ID =====
     private static void dongBoIdCounter() {
         int maxId = 0;
-        // Câu SQL này lấy ID SỐ lớn nhất từ cả 2 bảng
-        // (Bằng cách cắt bỏ 'KH', 'NV' và chuyển sang số)
+        // Lấy số lớn nhất từ cả 2 bảng (cắt bỏ KH/NV và chuyển thành số)
+        // Ví dụ: KH005 -> lấy số 5.
         String sql = "SELECT MAX(IdNumber) FROM (" +
                 "  SELECT CAST(SUBSTRING(MaKH, 3) AS UNSIGNED) AS IdNumber FROM khachhang " +
                 "  UNION " +
@@ -93,31 +93,24 @@ public class MainForm extends JFrame {
                 ResultSet rs = ps.executeQuery()) {
 
             if (rs.next()) {
-                maxId = rs.getInt(1); // Lấy ID lớn nhất
+                maxId = rs.getInt(1);
             }
 
-            // Thiết lập 'cnt' của Person.java thành giá trị (lớn nhất + 1)
+            // Set biến đếm bắt đầu từ maxId + 1
+            // Ví dụ database có KH005 là lớn nhất -> lần sau sẽ tạo KH006
             Person.setCnt(maxId + 1);
-            // System.out.println("Dong bo ID counter thanh cong. Gia tri bat dau: " + (maxId + 1));
+            System.out.println("Đã đồng bộ ID. Bắt đầu từ: " + (maxId + 1));
 
         } catch (SQLException e) {
-            // System.err.println("Loi khi dong bo ID counter! Dat gia tri mac dinh = 1.");
             e.printStackTrace();
-            Person.setCnt(1); // Quay về mặc định nếu lỗi CSDL
+            Person.setCnt(1);
         }
     }
 
-    /**
-     * Phương thức Main để chạy ứng dụng
-     */
     public static void main(String[] args) {
-
-        // ===== BƯỚC FIX LỖI TRÙNG KEY =====
-        // Đồng bộ ID counter từ CSDL trước khi làm bất cứ điều gì khác
+        // Gọi hàm này TRƯỚC KHI chạy giao diện
         dongBoIdCounter();
-        // ===================================
 
-        // Chạy giao diện
         SwingUtilities.invokeLater(() -> {
             new MainForm().setVisible(true);
         });

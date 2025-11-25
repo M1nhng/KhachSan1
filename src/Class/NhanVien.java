@@ -12,6 +12,8 @@ public class NhanVien extends Person {
     private static final DecimalFormat df = new DecimalFormat("#,###"); 
 
     // ===== CONSTRUCTOR =====
+    public NhanVien(){}
+    
     public NhanVien(String ten, String soCMND, String soDienThoai, double luongCoBan,String chucvu) {
         super("NV",ten, soCMND, soDienThoai);
         setLuongCoBan(luongCoBan);
