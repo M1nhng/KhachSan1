@@ -183,6 +183,8 @@ public class App {
             System.out.println("3. Tra phong va thanh toan");
             System.out.println("4. Xem khach thue theo phong");
             System.out.println("5. Xoa phong");
+            System.out.println("6. Them dich vu");
+            System.out.println("7. Xem dich vu");
             System.out.println("0. Quay lai");
             System.out.print("Chon: ");
             choice = Integer.parseInt(sc.nextLine());
@@ -196,6 +198,8 @@ public class App {
                 }
                 case 4 -> QuanLyPhong.xemKhachTheoPhong();
                 case 5 -> QuanLyPhong.xoaPhong();
+                case 6 -> QuanLyPhong.themDichVuVaoPhong(sc);
+                case 7 -> QuanLyPhong.xemDichVuTheoPhong(sc);
                 case 0 -> System.out.println("Quay lai menu chinh");
                 default -> System.out.println("Lua chon khong hop le!");
             }
@@ -234,6 +238,7 @@ public class App {
             System.out.println("2. Xoa nhan vien");
             System.out.println("3. Sua thong tin nhan vien");
             System.out.println("4. Xem danh sach nhan vien");
+            System.out.println("5. Thanh toan tien luong");
             System.out.println("0. Quay lai");
             System.out.print("Chon: ");
             choice1 = Integer.parseInt(sc.nextLine());
@@ -243,6 +248,7 @@ public class App {
                 case 2 -> NhanVien.xoaNhanVien();
                 case 3 -> NhanVien.suaNhanVien();
                 case 4 -> NhanVien.xemNhanVien();
+                case 5 -> NhanVien.ThanhToanLuong();
                 case 0 -> System.out.println("Quay lai menu chinh");
                 default -> System.out.println("Lua chon khong hop le!");
             }
