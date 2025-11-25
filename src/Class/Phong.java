@@ -3,6 +3,7 @@ package Class;
 import java.time.LocalDateTime; 
 import java.time.format.DateTimeFormatter;
 import java.text.DecimalFormat;
+import java.util.*;
 
 public class Phong {
     private String maPhong;
@@ -106,4 +107,26 @@ public class Phong {
             (trangThai ? "Da thue" : "Trong")
         );
     }
+    
+    private List<DichVu> dsDichVu = new ArrayList<>();
+
+    public void themDichVu(DichVu dv) {
+        dsDichVu.add(dv);
+        System.out.println("Da them dich vu: " + dv.getTenDichVu() + " vao phong " + maPhong);
+    }
+
+    public List<DichVu> getDsDichVu() {
+        return dsDichVu;
+    }
+
+    public double tinhTongTienDichVu() {
+        double tong = 0;
+        for (DichVu dv : dsDichVu) {
+            tong += dv.getGiaDichVu();
+        }
+        return tong;
+    }
+
+
 }
+

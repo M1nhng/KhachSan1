@@ -1,4 +1,6 @@
 package Class;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Person {
     private String maID;
@@ -8,13 +10,16 @@ public class Person {
 
     protected static int cnt = 1;
 
+    private static Map<String, Integer> demTheoPrefix = new HashMap<>();
 
     public Person() {
        
     }
 
     public Person(String prefix) {
-        this.maID = String.format("%s%03d", prefix, cnt++);
+    	int so = demTheoPrefix.getOrDefault(prefix, 0) + 1;
+        demTheoPrefix.put(prefix, so);
+        this.maID = String.format("%s%03d", prefix, so);
     }
 
     public Person(String prefix, String ten, String soCMND, String soDienThoai) {
@@ -24,7 +29,6 @@ public class Person {
         setSoDienThoai(soDienThoai);
     }
 
-    // ===== GETTER =====
     public String getMaID() {
         return maID;
     }
@@ -59,5 +63,10 @@ public class Person {
 
     public static void setCnt(int cnt) {
         Person.cnt = cnt;
+    }
+    
+    // ===== TIỆN ÍCH =====
+    public static void resetCounter() {
+        demTheoPrefix.clear();
     }
 }
