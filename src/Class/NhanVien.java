@@ -2,12 +2,14 @@ package Class;
 
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.text.DecimalFormat;
 
 public class NhanVien extends Person {
     private double luongCoBan;
     private String chucvu;
     private static ArrayList<NhanVien> dsNV = new ArrayList<>();
     private static Scanner sc = new Scanner(System.in);
+    private static final DecimalFormat df = new DecimalFormat("#,###"); 
 
     // ===== CONSTRUCTOR =====
     public NhanVien(String ten, String soCMND, String soDienThoai, double luongCoBan,String chucvu) {
@@ -39,8 +41,8 @@ public class NhanVien extends Person {
     @Override
     public String toString() {
         return String.format(
-            "Nhan vien [ID=%s, Ten=%s, CMND=%s, SDT=%s, Luong=%.2f, Chucvu = %s]",
-            getMaID(), getTen(), getSoCMND(), getSoDienThoai(), getLuongCoBan(),getChucVu()
+        	"Nhan vien [ID=%s, Ten=%s, CMND=%s, SDT=%s, Luong=%s VND, Chucvu = %s]",
+             getMaID(), getTen(), getSoCMND(), getSoDienThoai(), df.format(getLuongCoBan()),getChucVu()
         );
     }
 
@@ -149,6 +151,49 @@ public class NhanVien extends Person {
         System.out.println("\n===== DANH SACH NHAN VIEN =====");
         for (NhanVien nv : dsNV) {
             System.out.println(nv);
+        }
+    }
+    
+  //Tính lương
+    public double TinhLuong() {
+        double heSo = 1.0;
+        if (chucvu != null) {
+            switch (chucvu.toLowerCase()) {
+                case "quan ly" -> heSo = 2.0;
+                case "le tan" -> heSo = 1.2;
+                case "phuc vu" -> heSo = 1.0;
+            }
+        }
+        return luongCoBan * heSo;
+    }
+    public static void ThanhToanLuong() {
+        if (dsNV.isEmpty()) {
+            System.out.println("Chua co nhan vien nao!");
+            return;
+        }
+        System.out.print("Nhap ma nhan vien can thanh toan: ");
+        String id = sc.nextLine().trim();
+
+        NhanVien nv = null;
+        for (NhanVien n : dsNV) {
+            if (n.getMaID().equalsIgnoreCase(id)) {
+                nv = n;
+                break;
+            }
+        }
+        if (nv == null) {
+            System.out.println("Khong tim thay nhan vien: " + id);
+            return;
+        }
+
+        double luong = nv.TinhLuong();
+        System.out.println("Luong cua " + nv.getTen() + " la: " + df.format(luong) + " VND");
+        System.out.print("Xac nhan thanh toan? (y/n): ");
+        String xacnhan = sc.nextLine();
+        if (xacnhan.equalsIgnoreCase("y")) {
+            ThanhToan.truDoanhThu(nv);
+        } else {
+            System.out.println("Da huy thanh toan");
         }
     }
 }
