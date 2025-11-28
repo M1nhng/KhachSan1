@@ -16,11 +16,11 @@ public class KhachHangRepository implements IKhachHangRepository {
         KhachHang kh = new KhachHang();
 
         // 2. Dùng các hàm setter (bao gồm cả setMaID mới) để nạp dữ liệu
-        kh.setMaID(rs.getString("MaKH")); 
-        kh.setTen(rs.getString("Ten")); 
-        kh.setSoCMND(rs.getString("SoCMND")); 
-        kh.setSoDienThoai(rs.getString("SoDienThoai")); 
-        kh.setEmail(rs.getString("Email")); 
+        kh.setMaID(rs.getString("MaKH"));
+        kh.setTen(rs.getString("Ten"));
+        kh.setSoCMND(rs.getString("SoCMND"));
+        kh.setSoDienThoai(rs.getString("SoDienThoai"));
+        kh.setEmail(rs.getString("Email"));
 
         return kh;
     }
@@ -45,25 +45,22 @@ public class KhachHangRepository implements IKhachHangRepository {
     }
 
     @Override
-    public List<KhachHang> findByName(String ten) {
-        List<KhachHang> dsKhachHang = new ArrayList<>();
-        // Sửa SQL: Dùng LIKE ?
-        String sql = "SELECT * FROM khachhang WHERE Ten LIKE ?";
+    public KhachHang getByName(String ten) {
+        String sql = "SELECT * FROM khachhang WHERE Ten like ?";
 
         try (Connection conn = DatabaseConnection.getConnection();
                 PreparedStatement ps = conn.prepareStatement(sql)) {
 
-            ps.setString(1, "%" + ten + "%");
-
+            ps.setString(1, ten);
             try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    dsKhachHang.add(mapResultSetToKhachHang(rs));
+                if (rs.next()) {
+                    return mapResultSetToKhachHang(rs);
                 }
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return dsKhachHang; // Trả về danh sách (có thể rỗng)
+        return null;
     }
 
     @Override
@@ -99,7 +96,7 @@ public class KhachHangRepository implements IKhachHangRepository {
             ps.setString(2, kh.getSoCMND());
             ps.setString(3, kh.getSoDienThoai());
             ps.setString(4, kh.getEmail());
-            ps.setString(5, kh.getMaID()); 
+            ps.setString(5, kh.getMaID());
 
             return ps.executeUpdate() > 0;
         } catch (SQLException e) {
@@ -110,7 +107,7 @@ public class KhachHangRepository implements IKhachHangRepository {
 
     @Override
     public boolean delete(String id) {
-        String sql = "DELETE FROM khachhang WHERE MaKH = ?"; 
+        String sql = "DELETE FROM khachhang WHERE MaKH = ?";
 
         try (Connection conn = DatabaseConnection.getConnection();
                 PreparedStatement ps = conn.prepareStatement(sql)) {

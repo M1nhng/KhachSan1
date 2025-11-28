@@ -1,9 +1,6 @@
 package Class;
 
-import java.time.LocalDateTime; 
-import java.time.format.DateTimeFormatter;
 import java.text.DecimalFormat;
-import java.util.*;
 
 public class Phong {
     private String maPhong;
@@ -11,18 +8,18 @@ public class Phong {
     private double giaPhong;
     private boolean trangThai;
     private KhachHang KhachThue;
-    private String thoiGianDatPhong;
+
     private static final DecimalFormat df = new DecimalFormat("#,###");
+
+    // (MỚI) Constructor rỗng
+    public Phong() {
+    }
 
     public Phong(String maPhong, String loaiPhong, double giaPhong, boolean trangThai) {
         setMaPhong(maPhong);
         setLoaiPhong(loaiPhong);
         setGiaPhong(giaPhong);
         setTrangThai(trangThai);
-    }
-
-    public Phong() {
-        
     }
 
     public String getMaPhong() {
@@ -66,67 +63,39 @@ public class Phong {
     public void setKhachThue(KhachHang khach) {
         this.KhachThue = khach;
     }
-    
-    public String getThoiGianDatPhong() {
-        return thoiGianDatPhong;
-    }
 
-    public void setThoiGianDatPhong(String thoiGianDatPhong) {
-        this.thoiGianDatPhong = thoiGianDatPhong;
-    }
-
-    // ===== ĐẶT PHÒNG =====
+    // ===== ĐẶT PHÒNG (SỬA ĐỔI) =====
+    // Sửa: Trả về String thay vì boolean và System.out.println
     public String datPhong(KhachHang khach) {
         if (trangThai) {
             return "Phong " + maPhong + " da co nguoi thue!";
         }
+        if (khach == null) {
+            return "Khach hang khong hop le!";
+        }
         this.trangThai = true;
         this.KhachThue = khach;
-        this.thoiGianDatPhong = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy, HH:mm:ss"));
-
-        return "Phong " + maPhong + " da duoc dat cho khach: " + khach.getTen() +
-        ", Thoi gian dat phong: " + this.thoiGianDatPhong;
+        return "Phong " + maPhong + " da duoc dat cho khach: " + khach.getTen();
     }
 
-    // ===== TRẢ PHÒNG =====
+    // ===== TRẢ PHÒNG (SỬA ĐỔI) =====
+    // Sửa: Trả về String thay vì boolean và System.out.println
     public String traPhong() {
         if (!trangThai) {
             return "Phong " + maPhong + " dang trong!";
         }
+        String tenKhachCu = (this.KhachThue != null) ? this.KhachThue.getTen() : "[Khong ro]";
+
         this.trangThai = false;
         this.KhachThue = null;
-        this.thoiGianDatPhong = null;
-        return "Phong " + maPhong + " da duoc tra.";
+        return "Phong " + maPhong + " da duoc tra boi " + tenKhachCu + ".";
     }
 
     @Override
     public String toString() {
         return String.format(
-            "Phong %s | Loai: %s | Gia: %s VND | Trang thai: %s",
-            maPhong, loaiPhong, df.format(giaPhong),
-            (trangThai ? "Da thue" : "Trong")
-        );
+                "Phong %s | Loai: %s | Gia: %s VND | Trang thai: %s",
+                maPhong, loaiPhong, df.format(giaPhong),
+                (trangThai ? "Da thue" : "Trong"));
     }
-    
-    private List<DichVu> dsDichVu = new ArrayList<>();
-
-    public void themDichVu(DichVu dv) {
-        dsDichVu.add(dv);
-        System.out.println("Da them dich vu: " + dv.getTenDichVu() + " vao phong " + maPhong);
-    }
-
-    public List<DichVu> getDsDichVu() {
-        return dsDichVu;
-    }
-
-    public double tinhTongTienDichVu() {
-        double tong = 0;
-        for (DichVu dv : dsDichVu) {
-            tong += dv.getGiaDichVu();
-        }
-        return tong;
-    }
-
-
 }
-

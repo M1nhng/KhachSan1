@@ -10,7 +10,7 @@ import repository.IKhachHangRepository;
 import repository.KhachHangRepository;
 // (Sau này bạn sẽ import thêm INhanVienRepository, NhanVienRepository...)
 
-public class App {
+public class Main {
     private static Scanner sc = new Scanner(System.in);
 
     private static IKhachHangRepository khachHangRepo = new KhachHangRepository();
@@ -58,7 +58,7 @@ public class App {
             System.out.println("2. Xoa khach hang ");
             System.out.println("3. Sua thong tin khach hang ");
             System.out.println("4. Xem danh sach khach hang ");
-            System.out.println("5. Tim kiem khach hang "); 
+            System.out.println("5. Tim kiem khach hang ");
             System.out.println("0. Quay lai");
             System.out.print("Chon: ");
             choice = Integer.parseInt(sc.nextLine());
@@ -140,7 +140,7 @@ public class App {
 
                     if (dsTuDB.isEmpty()) {
                         System.out.println("Chua co khach hang nao ");
-                        break; 
+                        break;
                     }
 
                     System.out.println("\n===== DANH SACH KHACH HANG =====");
@@ -156,7 +156,7 @@ public class App {
                     String ten = sc.nextLine();
 
                     // Sử dụng phương thức getById từ repository
-                    List<KhachHang> kh = khachHangRepo.findByName(ten);
+                    KhachHang kh = khachHangRepo.getByName(ten);
 
                     if (kh != null) {
                         System.out.println("Da tim thay khach hang:");
@@ -183,8 +183,6 @@ public class App {
             System.out.println("3. Tra phong va thanh toan");
             System.out.println("4. Xem khach thue theo phong");
             System.out.println("5. Xoa phong");
-            System.out.println("6. Them dich vu");
-            System.out.println("7. Xem dich vu");
             System.out.println("0. Quay lai");
             System.out.print("Chon: ");
             choice = Integer.parseInt(sc.nextLine());
@@ -198,8 +196,6 @@ public class App {
                 }
                 case 4 -> QuanLyPhong.xemKhachTheoPhong();
                 case 5 -> QuanLyPhong.xoaPhong();
-                case 6 -> QuanLyPhong.themDichVuVaoPhong(sc);
-                case 7 -> QuanLyPhong.xemDichVuTheoPhong(sc);
                 case 0 -> System.out.println("Quay lai menu chinh");
                 default -> System.out.println("Lua chon khong hop le!");
             }
@@ -238,7 +234,6 @@ public class App {
             System.out.println("2. Xoa nhan vien");
             System.out.println("3. Sua thong tin nhan vien");
             System.out.println("4. Xem danh sach nhan vien");
-            System.out.println("5. Thanh toan tien luong");
             System.out.println("0. Quay lai");
             System.out.print("Chon: ");
             choice1 = Integer.parseInt(sc.nextLine());
@@ -248,7 +243,6 @@ public class App {
                 case 2 -> NhanVien.xoaNhanVien();
                 case 3 -> NhanVien.suaNhanVien();
                 case 4 -> NhanVien.xemNhanVien();
-                case 5 -> NhanVien.ThanhToanLuong();
                 case 0 -> System.out.println("Quay lai menu chinh");
                 default -> System.out.println("Lua chon khong hop le!");
             }

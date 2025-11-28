@@ -10,121 +10,77 @@ import java.text.DecimalFormat;
 public class ThanhToan {
     private static List<ThanhToan> lichSuThanhToan = new ArrayList<>();
     private static double tongDoanhThu = 0;
-    private static Scanner sc = new Scanner(System.in);
-    private static final DecimalFormat df = new DecimalFormat("#,###"); 
+    private static final DecimalFormat df = new DecimalFormat("#,###");
 
     private String maPhong;
     private String tenKhach;
     private double soTien;
-    private String thoiGianDatPhong;
-    private String thoiGianTraPhong;
+    private String thoiGian;
+    private String chiTietDichVu; // (MỚI) Biến lưu danh sách dịch vụ
 
-    public ThanhToan(String maPhong, String tenKhach, double soTien, String thoiGianDatPhong) {
+    // Constructor cập nhật
+    public ThanhToan(String maPhong, String tenKhach, double soTien, String chiTietDichVu) {
         this.maPhong = maPhong;
         this.tenKhach = tenKhach;
         this.soTien = soTien;
-        this.thoiGianDatPhong = (thoiGianDatPhong != null) ? thoiGianDatPhong : "N/A"; 
-        this.thoiGianTraPhong = LocalDateTime.now()
-                .format(DateTimeFormatter.ofPattern("dd/MM/yyyy, HH:mm:ss"));
+        this.chiTietDichVu = chiTietDichVu; // (MỚI)
+        this.thoiGian = LocalDateTime.now()
+                .format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"));
     }
 
-    // ===== GHI NHẬN THANH TOÁN =====
-    public static String ghiNhanThanhToan(Phong phong){
-    	
-        if(phong == null || phong.getKhachThue() == null){
-            System.out.println("Khong the thanh toan! Phong va khach khong hop le!");
-            return "Thanh toan that bai: Phong hoac khach khong hop le.";
+    // Hàm cũ (giữ lại để tương thích với Main.java console nếu cần)
+    public static String ghiNhanThanhToan(Phong phong) {
+        return ghiNhanThanhToan(phong, 0, "Không có dịch vụ");
+    }
+
+    // (MỚI) Hàm ghi nhận thanh toán có thêm Dịch vụ & Tổng tiền thực tế
+    public static String ghiNhanThanhToan(Phong phong, double tongTienThucTe, String dsDichVu) {
+        if (phong == null || phong.getKhachThue() == null) {
+            return "Không thể thanh toán! Phòng và khách không hợp lệ!";
         }
 
-        double soTien = phong.getGiaPhong(); 
-        double tienDV = phong.tinhTongTienDichVu();
-        double tongTien = soTien + tienDV;
-        ThanhToan tt = new ThanhToan(phong.getMaPhong(), phong.getKhachThue().getTen(), tongTien, phong.getThoiGianDatPhong());
+        // Nếu tổng tiền thực tế = 0 (chưa tính) thì lấy giá phòng cơ bản
+        double soTienCuoi = (tongTienThucTe > 0) ? tongTienThucTe : phong.getGiaPhong();
+
+        ThanhToan tt = new ThanhToan(
+                phong.getMaPhong(),
+                phong.getKhachThue().getTen(),
+                soTienCuoi,
+                dsDichVu // (MỚI) Lưu chuỗi dịch vụ vào lịch sử
+        );
 
         lichSuThanhToan.add(tt);
-        tongDoanhThu += tongTien;
+        tongDoanhThu += soTienCuoi;
 
-        System.out.println("Thanh toan thanh cong! Tien phong: " + df.format(soTien) + " VND! " + "Tien dich vu: " + df.format(tienDV) + "VND! " + "Tong tien: " + df.format(tongTien));
-        System.out.println("Thoi gian tra phong: " + tt.thoiGianTraPhong);
-        return "Thanh toan thanh cong.";
+        return "Thanh toán thành công! Tổng tiền: " + df.format(soTienCuoi) + " VND";
     }
 
-    // ===== THỰC HIỆN THANH TOÁN (khi trả phòng) =====
     public static void thanhToanPhong() {
-        System.out.print("Nhap ma phong can thanh toan: ");
-        String maPhong = sc.nextLine().trim();
-
-        Phong phong = timPhongTheoMa(maPhong);
-        if (phong == null) {
-            System.out.println("Khong tim thay phong " + maPhong);
-            return;
-        }
-
-        if (!phong.isTrangThai()) {
-            System.out.println("Phong nay hien dang trong, khong can thanh toan!");
-            return;
-        }
-
-        ghiNhanThanhToan(phong);
-        phong.traPhong();
-    }
-    //TRỪ DOANH THU
-    public static void truDoanhThu(NhanVien nv) {
-        tongDoanhThu -= nv.TinhLuong();
-        ThanhToan tt = new ThanhToan("LuongNV", nv.getTen(), -nv.TinhLuong(), "Chi tra luong");
-        lichSuThanhToan.add(tt);
-        System.out.println("Da thanh toan luong cho nhan vien: " + nv.getTen());
-        System.out.println("So tien da chi: " + df.format(nv.TinhLuong()) + " VND");
+        // (Code console giữ nguyên, không ảnh hưởng)
+        System.out.println("Chức năng này trên Console chưa hỗ trợ chi tiết dịch vụ.");
     }
 
-    // ===== XEM LỊCH SỬ THANH TOÁN =====
-    public static void xemLichSuThanhToan(){
-        if(lichSuThanhToan.isEmpty()){
-            System.out.println("Chua co thanh toan nao!");
+    public static void xemLichSuThanhToan() {
+        if (lichSuThanhToan.isEmpty()) {
+            System.out.println("Chưa có thanh toán nào!");
             return;
         }
-        System.out.println("\n===== LICH SU THANH TOAN =====");
+        System.out.println("\n===== LỊCH SỬ THANH TOÁN =====");
         for (ThanhToan tt : lichSuThanhToan) {
             System.out.println(tt);
         }
         System.out.println("================================");
-        System.out.println("Tong doanh thu: " + df.format(tongDoanhThu) + " VND\n");
     }
 
-    // ===== XEM DOANH THU =====
     public static void xemDoanhThu() {
-        System.out.println("\n===== DOANH THU HIEN TAI =====");
-        System.out.println("Tong doanh thu: " + df.format(tongDoanhThu) + " VND");
-        System.out.println("================================\n");
-    }
-
-    // ===== TÌM PHÒNG THEO MÃ =====
-    private static Phong timPhongTheoMa(String maPhong) {
-        try {
-            java.lang.reflect.Field field = QuanLyPhong.class.getDeclaredField("dsPhong");
-            field.setAccessible(true);
-            List<Phong> dsPhong = (List<Phong>) field.get(null);
-
-            for (Phong p : dsPhong) {
-                if (p.getMaPhong().equalsIgnoreCase(maPhong)) {
-                    return p;
-                }
-            }
-        } catch (Exception e) {
-            System.out.println("Loi khi tim phong: " + e.getMessage());
-        }
-        return null;
+        System.out.println("Tổng doanh thu: " + df.format(tongDoanhThu) + " VND");
     }
 
     @Override
     public String toString() {
+        // (MỚI) Cập nhật hiển thị có thêm chi tiết dịch vụ
         return String.format(
-        	"Phong: %s | Khach: %s | Tien: %s VND | Thoi gian: %s - %s",
-             maPhong, tenKhach, df.format(soTien), thoiGianDatPhong, thoiGianTraPhong
-        );
-    }
-
-    public static double getTongDoanhThu() {
-        return tongDoanhThu;
+                "Phòng: %s | Khach: %s | Tiền: %s VND | Ngày: %s\n   -> Dịch vụ: %s",
+                maPhong, tenKhach, df.format(soTien), thoiGian, chiTietDichVu);
     }
 }

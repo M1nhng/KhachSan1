@@ -1,3 +1,4 @@
+// Tệp: src/repository/PhongRepository.java
 package repository;
 
 import Class.KhachHang;
@@ -40,6 +41,41 @@ public class PhongRepository implements IPhongRepository {
             p.setKhachThue(kh);
         }
         return p;
+    }
+
+    // --- HÀM MỚI: Tự động tạo phòng ảo "MENU" để chứa dịch vụ gốc ---
+    public void khoiTaoPhongChoMenu() {
+        // 1. Kiểm tra xem phòng MENU đã tồn tại chưa
+        String checkSql = "SELECT MaPhong FROM phong WHERE MaPhong = 'MENU'";
+        try (Connection conn = DatabaseConnection.getConnection();
+                PreparedStatement psCheck = conn.prepareStatement(checkSql);
+                ResultSet rs = psCheck.executeQuery()) {
+
+            if (rs.next()) {
+                // Đã có phòng MENU rồi thì không làm gì cả
+                return;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        // 2. Nếu chưa có, tiến hành tạo mới
+        String insertSql = "INSERT INTO phong (MaPhong, LoaiPhong, GiaPhong, TrangThai) VALUES (?, ?, ?, ?)";
+        try (Connection conn = DatabaseConnection.getConnection();
+                PreparedStatement psInsert = conn.prepareStatement(insertSql)) {
+
+            psInsert.setString(1, "MENU");
+            psInsert.setString(2, "KHO_DICH_VU"); // Loại phòng
+            psInsert.setDouble(3, 0); // Giá 0
+            psInsert.setBoolean(4, false); // Trạng thái trống
+
+            psInsert.executeUpdate();
+            System.out.println("Đã tự động khởi tạo phòng 'MENU' thành công!");
+
+        } catch (SQLException e) {
+            System.err.println("Lỗi khi khởi tạo phòng MENU: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -141,30 +177,5 @@ public class PhongRepository implements IPhongRepository {
             e.printStackTrace();
             return false;
         }
-    }
-
-    @Override
-    public List<Phong> findByName(String ten) {
-        List<Phong> dsPhong = new ArrayList<>();
-        // Tìm kiếm phòng theo tên khách hàng đang thuê
-        String sql = "SELECT p.*, kh.Ten, kh.SoCMND, kh.SoDienThoai, kh.Email " +
-                "FROM phong p " +
-                "LEFT JOIN khachhang kh ON p.MaKH = kh.MaKH " +
-                "WHERE kh.Ten LIKE ?";
-
-        try (Connection conn = DatabaseConnection.getConnection();
-                PreparedStatement ps = conn.prepareStatement(sql)) {
-
-            ps.setString(1, "%" + ten + "%");
-
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    dsPhong.add(mapResultSetToPhong(rs));
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return dsPhong;
     }
 }

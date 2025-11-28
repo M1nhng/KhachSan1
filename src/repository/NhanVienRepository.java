@@ -1,6 +1,6 @@
 package repository;
 
-import Class.NhanVien;
+import Class.NhanVien; // Import model NhanVien
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -10,42 +10,55 @@ import java.util.List;
 
 public class NhanVienRepository implements INhanVienRepository {
 
+    // Ánh xạ ResultSet sang đối tượng NhanVien
     private NhanVien mapResultSetToNhanVien(ResultSet rs) throws SQLException {
+        // 1. Dùng constructor rỗng (bạn vừa thêm ở bước 1)
         NhanVien nv = new NhanVien();
+
+        // 2. Dùng các hàm setter để nạp dữ liệu
+        // GIẢ ĐỊNH bạn có hàm setMaID() trong lớp Person
         nv.setMaID(rs.getString("MaNV"));
         nv.setTen(rs.getString("Ten"));
         nv.setSoCMND(rs.getString("SoCMND"));
         nv.setSoDienThoai(rs.getString("SoDienThoai"));
-        nv.setLuongCoBan(rs.getDouble("Luong"));
+
+        // KHỚP VỚI MODEL CỦA BẠN:
         nv.setChucVu(rs.getString("ChucVu"));
+        nv.setLuongCoBan(rs.getDouble("LuongCoBan")); // Dùng setLuongCoBan
+
         return nv;
     }
 
     @Override
     public List<NhanVien> getAll() {
-        List<NhanVien> dsNV = new ArrayList<>();
+        List<NhanVien> dsNhanVien = new ArrayList<>();
         String sql = "SELECT * FROM nhanvien";
+
         try (Connection conn = DatabaseConnection.getConnection();
                 PreparedStatement ps = conn.prepareStatement(sql);
                 ResultSet rs = ps.executeQuery()) {
+
             while (rs.next()) {
-                dsNV.add(mapResultSetToNhanVien(rs));
+                dsNhanVien.add(mapResultSetToNhanVien(rs));
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return dsNV;
+        return dsNhanVien;
     }
 
     @Override
-    public NhanVien getById(String id) {
-        String sql = "SELECT * FROM nhanvien WHERE MaNV = ?";
+    public NhanVien getByName(String ten) {
+        String sql = "SELECT * FROM nhanvien WHERE Ten LIKE ?";
+
         try (Connection conn = DatabaseConnection.getConnection();
                 PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, id);
+
+            ps.setString(1, "%" + ten + "%"); // Thêm % để tìm kiếm gần đúng
             try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next())
+                if (rs.next()) {
                     return mapResultSetToNhanVien(rs);
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -54,35 +67,25 @@ public class NhanVienRepository implements INhanVienRepository {
     }
 
     @Override
-    public List<NhanVien> findByName(String ten) {
-        List<NhanVien> dsNV = new ArrayList<>();
-        String sql = "SELECT * FROM nhanvien WHERE Ten LIKE ?";
-        try (Connection conn = DatabaseConnection.getConnection();
-                PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, "%" + ten + "%");
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next())
-                    dsNV.add(mapResultSetToNhanVien(rs));
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return dsNV;
-    }
-
-    @Override
     public boolean add(NhanVien nv) {
-        String sql = "INSERT INTO nhanvien (MaNV, Ten, SoCMND, SoDienThoai, Luong, ChucVu) VALUES (?, ?, ?, ?, ?, ?)";
+        // KHỚP VỚI MODEL CỦA BẠN: Dùng cột ChucVu, LuongCoBan
+        String sql = "INSERT INTO nhanvien (MaNV, Ten, SoCMND, SoDienThoai, ChucVu, LuongCoBan) VALUES (?, ?, ?, ?, ?, ?)";
+
         try (Connection conn = DatabaseConnection.getConnection();
                 PreparedStatement ps = conn.prepareStatement(sql)) {
+
             ps.setString(1, nv.getMaID());
             ps.setString(2, nv.getTen());
             ps.setString(3, nv.getSoCMND());
             ps.setString(4, nv.getSoDienThoai());
-            ps.setDouble(5, nv.getLuongCoBan());
-            ps.setString(6, nv.getChucVu());
+
+            // KHỚP VỚI MODEL CỦA BẠN:
+            ps.setString(5, nv.getChucVu()); // Dùng getChucVu
+            ps.setDouble(6, nv.getLuongCoBan()); // Dùng getLuongCoBan
+
             return ps.executeUpdate() > 0;
         } catch (SQLException e) {
+            System.err.println("Lỗi khi thêm nhân viên: " + e.getMessage());
             e.printStackTrace();
             return false;
         }
@@ -90,15 +93,22 @@ public class NhanVienRepository implements INhanVienRepository {
 
     @Override
     public boolean update(NhanVien nv) {
-        String sql = "UPDATE nhanvien SET Ten=?, SoCMND=?, SoDienThoai=?, Luong=?, ChucVu=? WHERE MaNV=?";
+        // KHỚP VỚI MODEL CỦA BẠN:
+        String sql = "UPDATE nhanvien SET Ten = ?, SoCMND = ?, SoDienThoai = ?, ChucVu = ?, LuongCoBan = ? WHERE MaNV = ?";
+
         try (Connection conn = DatabaseConnection.getConnection();
                 PreparedStatement ps = conn.prepareStatement(sql)) {
+
             ps.setString(1, nv.getTen());
             ps.setString(2, nv.getSoCMND());
             ps.setString(3, nv.getSoDienThoai());
-            ps.setDouble(4, nv.getLuongCoBan());
-            ps.setString(5, nv.getChucVu());
+
+            // KHỚP VỚI MODEL CỦA BẠN:
+            ps.setString(4, nv.getChucVu()); // Dùng getChucVu
+            ps.setDouble(5, nv.getLuongCoBan()); // Dùng getLuongCoBan
+
             ps.setString(6, nv.getMaID());
+
             return ps.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -108,14 +118,35 @@ public class NhanVienRepository implements INhanVienRepository {
 
     @Override
     public boolean delete(String id) {
-        String sql = "DELETE FROM nhanvien WHERE MaNV=?";
+        String sql = "DELETE FROM nhanvien WHERE MaNV = ?";
+
         try (Connection conn = DatabaseConnection.getConnection();
                 PreparedStatement ps = conn.prepareStatement(sql)) {
+
             ps.setString(1, id);
             return ps.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
         }
+    }
+
+    @Override
+    public NhanVien getById(String id) { // Sửa: Kiểu trả về là NhanVien
+        String sql = "SELECT * FROM nhanvien WHERE MaNV = ?";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+                PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, id);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return mapResultSetToNhanVien(rs); // Trả về NhanVien
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }
