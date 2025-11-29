@@ -1,4 +1,4 @@
-package Class;
+package model;
 
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -10,7 +10,7 @@ public class NhanVien extends Person {
     private static Scanner sc = new Scanner(System.in);
 
     public NhanVien() {
-        super(); // Gọi constructor rỗng của Person
+        super();
     }
 
     // ===== CONSTRUCTOR =====

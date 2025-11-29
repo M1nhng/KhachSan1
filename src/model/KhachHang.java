@@ -1,4 +1,4 @@
-package Class;
+package model;
 
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -36,13 +36,12 @@ public class KhachHang extends Person {
         }
     }
 
-    public static void themKhachHang(){
+    public static void themKhachHang() {
         System.out.print("Nhap ten khach hang: ");
         String ten = sc.nextLine();
 
         System.out.print("Nhap so CMND: ");
         String cmnd = sc.nextLine();
-        
 
         System.out.print("Nhap so dien thoai: ");
         String sdt = sc.nextLine();
@@ -50,27 +49,27 @@ public class KhachHang extends Person {
         System.out.print("Nhap email: ");
         String email = sc.nextLine();
 
-        KhachHang kh = new KhachHang(ten,cmnd,sdt,email);
+        KhachHang kh = new KhachHang(ten, cmnd, sdt, email);
         dsKhachHang.add(kh);
         System.out.println("Them khach hang thanh cong");
     }
 
-    public static void xoaKhachHang(){
+    public static void xoaKhachHang() {
         System.out.print("Nhap ma khach hang can xoa: ");
         String id = sc.nextLine();
 
         KhachHang found = null;
-        for(KhachHang kh : dsKhachHang){
-            if(kh.getMaID().equals(id)){
+        for (KhachHang kh : dsKhachHang) {
+            if (kh.getMaID().equals(id)) {
                 found = kh;
                 break;
             }
         }
 
-        if(found != null){
+        if (found != null) {
             dsKhachHang.remove(found);
-            System.out.println("Da xoa khach hang " + id); 
-        }else{
+            System.out.println("Da xoa khach hang " + id);
+        } else {
             System.out.println("Khong tim thay khach hang " + id);
         }
     }
@@ -96,19 +95,23 @@ public class KhachHang extends Person {
 
         System.out.print("Ten moi: ");
         String ten = sc.nextLine();
-        if (!ten.isEmpty()) kh.setTen(ten);
+        if (!ten.isEmpty())
+            kh.setTen(ten);
 
         System.out.print("CMND moi: ");
         String cmnd = sc.nextLine();
-        if (!cmnd.isEmpty()) kh.setSoCMND(cmnd);
+        if (!cmnd.isEmpty())
+            kh.setSoCMND(cmnd);
 
         System.out.print("SDT moi: ");
         String sdt = sc.nextLine();
-        if (!sdt.isEmpty()) kh.setSoDienThoai(sdt);
+        if (!sdt.isEmpty())
+            kh.setSoDienThoai(sdt);
 
         System.out.print("Email moi: ");
         String email = sc.nextLine();
-        if (!email.isEmpty()) kh.setEmail(email);
+        if (!email.isEmpty())
+            kh.setEmail(email);
 
         System.out.println("Cap nhat thanh cong!");
     }
@@ -125,7 +128,7 @@ public class KhachHang extends Person {
         }
         System.out.println("================================\n");
     }
-    
+
     public static void timKhachHang() {
         if (dsKhachHang.isEmpty()) {
             System.out.println(" Chua co khach hang nao!");
@@ -148,9 +151,8 @@ public class KhachHang extends Person {
     @Override
     public String toString() {
         return String.format(
-            "Khach hang [ID=%s, Ten=%s, CMND=%s, SDT=%s, Email=%s]",
-            getMaID(), getTen(), getSoCMND(), getSoDienThoai(), getEmail()
-        );
+                "Khach hang [ID=%s, Ten=%s, CMND=%s, SDT=%s, Email=%s]",
+                getMaID(), getTen(), getSoCMND(), getSoDienThoai(), getEmail());
     }
-    
+
 }

@@ -11,9 +11,9 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableModel;
 
-import Class.DichVu;
-import Class.KhachHang;
-import Class.Phong;
+import model.DichVu;
+import model.KhachHang;
+import model.Phong;
 import repository.IDichVuRepository;
 import repository.IKhachHangRepository;
 import repository.IPhongRepository;

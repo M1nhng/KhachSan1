@@ -1,10 +1,10 @@
 import java.util.Scanner;
 import java.util.ArrayList;
 import java.util.List;
-import Class.KhachHang;
-import Class.NhanVien;
-import Class.QuanLyPhong;
-import Class.ThanhToan;
+import model.KhachHang;
+import model.NhanVien;
+import model.QuanLyPhong;
+import model.ThanhToan;
 // Import các lớp Repository
 import repository.IKhachHangRepository;
 import repository.KhachHangRepository;

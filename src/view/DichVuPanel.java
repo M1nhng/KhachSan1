@@ -9,7 +9,7 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
-import Class.DichVu;
+import model.DichVu;
 import repository.IDichVuRepository;
 
 public class DichVuPanel extends JPanel {

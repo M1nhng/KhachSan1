@@ -1,6 +1,6 @@
 package repository;
 
-import Class.DichVu;
+import model.DichVu;
 import java.sql.Connection;
 import java.sql.*;
 import java.util.ArrayList;
@@ -84,8 +84,6 @@ public class DichVuRepository implements IDichVuRepository {
 
     @Override
     public DichVu getById(String id) {
-        return null;
+        return null; // Chưa cần thiết
     }
 }
-
-   

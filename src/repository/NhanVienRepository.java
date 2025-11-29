@@ -1,6 +1,6 @@
 package repository;
 
-import Class.NhanVien; // Import model NhanVien
+import model.NhanVien; // Import model NhanVien
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

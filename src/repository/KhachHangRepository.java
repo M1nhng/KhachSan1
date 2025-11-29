@@ -1,6 +1,6 @@
 package repository;
 
-import Class.KhachHang;
+import model.KhachHang;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

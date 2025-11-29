@@ -1,12 +1,15 @@
 package view; // Phải cùng package với MainForm
 
 import java.awt.*;
+import java.awt.event.*;
 import java.util.List;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
 
-import Class.KhachHang; // Import model KhachHang
+import model.KhachHang; // Import model KhachHang
+import model.NhanVien;
 import repository.IKhachHangRepository; // Import repository
 
 public class KhachHangPanel extends JPanel {
@@ -133,17 +136,15 @@ public class KhachHangPanel extends JPanel {
      * Tải dữ liệu từ Repository lên JTable
      */
     private void loadCustomerData() {
-        model.setRowCount(0); // Xóa hết dữ liệu cũ
+        model.setRowCount(0);
         List<KhachHang> customers = khachHangRepo.getAll();
         for (KhachHang kh : customers) {
             model.addRow(new Object[] {
-                    kh.getMaID(),
-                    kh.getTen(),
-                    kh.getSoCMND(),
-                    kh.getSoDienThoai(),
-                    kh.getEmail()
+                    kh.getMaID(), kh.getTen(), kh.getSoCMND(), kh.getSoDienThoai(), kh.getEmail()
             });
         }
+        // Cập nhật text field mã KH để người dùng biết mã tiếp theo là gì
+        txtMaKH.setText(IdGenerator.generateNextId("khachhang", "KH", "MaKH"));
     }
 
     /**
@@ -178,7 +179,6 @@ public class KhachHangPanel extends JPanel {
             JOptionPane.showMessageDialog(this, "Thêm thất bại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
         }
     }
-
     /**
      * Chức năng Sửa Khách Hàng
      */

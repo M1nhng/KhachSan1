@@ -1,4 +1,5 @@
-package Class;
+// Tệp: src/model/QuanLyPhong.java
+package model;
 
 import java.util.ArrayList;
 import java.util.List;

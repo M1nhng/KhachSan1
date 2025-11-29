@@ -1,12 +1,9 @@
 package repository;
 
-import Class.Phong;
-import java.util.List;
+import model.Phong;
 
-public interface IPhongRepository extends IRepository<Phong>{
-
-    // List<Phong> getAll();
-    // Phong getById(String id);
-    // boolean datPhong(String maPhong, String maKH);
-    // boolean traPhong(String maPhong);
+public interface IPhongRepository extends IRepository<Phong> {
+    // Hiện tại chưa cần phương thức đặc biệt,
+    // nhưng sau này có thể thêm:
+    // List<Phong> getAvailableRooms();
 }

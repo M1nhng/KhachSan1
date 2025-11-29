@@ -31,7 +31,8 @@
 
 # VS Code
 .vscode/
-
+bin/
+lib/
 # Maven
 target/
 

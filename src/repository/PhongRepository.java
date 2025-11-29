@@ -1,8 +1,8 @@
 // Tệp: src/repository/PhongRepository.java
 package repository;
 
-import Class.KhachHang;
-import Class.Phong;
+import model.KhachHang;
+import model.Phong;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

@@ -1,4 +1,5 @@
-package Class;
+// Tệp: src/model/Phong.java
+package model;
 
 import java.text.DecimalFormat;
 

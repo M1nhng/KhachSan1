@@ -1,4 +1,4 @@
-package Class;
+package model;
 
 public class DichVu {
     private int maDV; // int để khớp với auto_increment trong DB

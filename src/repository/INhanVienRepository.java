@@ -1,7 +1,8 @@
 package repository;
 
-import Class.NhanVien;
+import model.NhanVien;
 
 public interface INhanVienRepository extends IRepository<NhanVien> {
+
     NhanVien getByName(String ten);
 }

@@ -11,8 +11,7 @@ import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.Locale;
 
-import Class.KhachHang;
-import Class.NhanVien; // Import model NhanVien
+import model.NhanVien; // Import model NhanVien
 import repository.INhanVienRepository; // Import repository NhanVien
 
 public class NhanVienPanel extends JPanel {
@@ -160,51 +159,67 @@ public class NhanVienPanel extends JPanel {
      */
     private void loadNhanVienData() {
         model.setRowCount(0);
-        List<NhanVien> employees = nhanVienRepo.getAll();
-        for (NhanVien nv : employees) {
+        List<NhanVien> list = nhanVienRepo.getAll();
+        for (NhanVien nv : list) {
             model.addRow(new Object[] {
-                    nv.getMaID(),
-                    nv.getTen(),
-                    nv.getSoCMND(),
-                    nv.getSoDienThoai(),
-                    nv.getChucVu(),
-                    // ===== SỬA ĐỔI QUAN TRỌNG Ở ĐÂY =====
-                    vndFormat.format(nv.getLuongCoBan()) // Bọc trong hàm format
-                    // ===================================
+                    nv.getMaID(), nv.getTen(), nv.getSoCMND(), nv.getSoDienThoai(),
+                    vndFormat.format(nv.getLuongCoBan()), nv.getChucVu()
             });
         }
+        // Cập nhật text field mã NV để hiển thị mã tiếp theo
+        txtMaNV.setText(IdGenerator.generateNextId("nhanvien", "NV", "MaNV"));
     }
 
     /**
      * Chức năng Thêm Nhân Viên (Không thay đổi)
      */
+    private void loadData() {
+        model.setRowCount(0);
+        List<NhanVien> list = nhanVienRepo.getAll();
+        for (NhanVien nv : list) {
+            model.addRow(new Object[] {
+                    nv.getMaID(), nv.getTen(), nv.getSoCMND(), nv.getSoDienThoai(), nv.getLuongCoBan(), nv.getChucVu()
+            });
+        }
+    }
+
     private void themNhanVien() {
         try {
             String ten = txtTen.getText();
             String cmnd = txtCMND.getText();
             String sdt = txtSDT.getText();
             String chucVu = txtChucVu.getText();
-            String luongStr = txtLuong.getText(); // Đọc từ ô text (đã là số)
+            double luong = Double.parseDouble(txtLuong.getText());
 
             if (ten.isEmpty() || cmnd.isEmpty() || chucVu.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Tên, CMND và Chức Vụ không được để trống!", "Lỗi",
-                        JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Tên, CMND và chức vụ không được để trống!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            if (cmnd.length() != 12) {
+                JOptionPane.showMessageDialog(this, "So CMND phai du 12 so!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            if (sdt.length() != 10) {
+                JOptionPane.showMessageDialog(this, "So dien thoai phai du 10 so!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            if(luong < 0){
+                JOptionPane.showMessageDialog(this, "So dien thoai phai du 10 so!", "Lỗi", JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
-            double luong = Double.parseDouble(luongStr);
-
+            // Tạo nhân viên mới (ID sẽ tự tăng dựa trên cnt trong Person)
             NhanVien nv = new NhanVien(ten, cmnd, sdt, luong, chucVu);
 
             if (nhanVienRepo.add(nv)) {
-                JOptionPane.showMessageDialog(this, "Thêm nhân viên thành công! ID mới: " + nv.getMaID());
-                loadNhanVienData();
+                JOptionPane.showMessageDialog(this, "Thêm thành công! ID: " + nv.getMaID());
+                loadData();
                 clearForm();
             } else {
                 JOptionPane.showMessageDialog(this, "Thêm thất bại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
             }
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "Lương phải là một con số!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(this, "Lương phải là số!", "Lỗi", JOptionPane.ERROR_MESSAGE);
         }
     }
 

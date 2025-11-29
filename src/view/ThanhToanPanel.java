@@ -12,9 +12,9 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
 
-import Class.DichVu;
-import Class.Phong;
-import Class.ThanhToan;
+import model.DichVu;
+import model.Phong;
+import model.ThanhToan;
 import repository.IDichVuRepository;
 import repository.IPhongRepository;
 
