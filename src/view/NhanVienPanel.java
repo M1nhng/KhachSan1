@@ -102,7 +102,7 @@ public class NhanVienPanel extends JPanel {
         formPanel.add(buttonPanel, BorderLayout.SOUTH);
 
         // --- Panel Bảng (CENTER) ---
-        String[] columnNames = { "Mã NV", "Tên", "CMND", "SĐT", "Chức Vụ", "Lương" };
+        String[] columnNames = { "Mã NV", "Tên", "CMND", "SĐT", "Lương", "Chức vụ" };
         model = new DefaultTableModel(columnNames, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -133,13 +133,17 @@ public class NhanVienPanel extends JPanel {
                 txtTen.setText(model.getValueAt(selectedRow, 1).toString());
                 txtCMND.setText(model.getValueAt(selectedRow, 2).toString());
                 txtSDT.setText(model.getValueAt(selectedRow, 3).toString());
-                txtChucVu.setText(model.getValueAt(selectedRow, 4).toString());
 
-                // ===== SỬA ĐỔI QUAN TRỌNG Ở ĐÂY =====
-                // Lấy chuỗi đã định dạng từ bảng (ví dụ: "100.000 VND")
-                String luongFormatted = model.getValueAt(selectedRow, 5).toString();
+                // --- SỬA LẠI ĐOẠN NÀY ---
 
-                // Chuyển nó về dạng số (ví dụ: "100000")
+                // Cột 5 là Chức Vụ (dựa theo code khai báo columnNames của bạn)
+                txtChucVu.setText(model.getValueAt(selectedRow, 5).toString());
+
+                // Cột 4 là Lương (dựa theo code khai báo columnNames của bạn)
+                // Lấy chuỗi đã định dạng từ bảng (ví dụ: "1.000.000 VND")
+                String luongFormatted = model.getValueAt(selectedRow, 4).toString();
+
+                // Chuyển nó về dạng số (ví dụ: "1000000")
                 String luongUnformatted = luongFormatted
                         .replace("VND", "") // Xóa chữ VND
                         .replace(".", "") // Xóa dấu chấm
