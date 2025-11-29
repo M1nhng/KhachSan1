@@ -65,31 +65,31 @@ public class QuanLyPhong {
     }
 
     // ===== TRẢ PHÒNG (ĐÃ SỬA) =====
-    public static void traPhong() {
-        System.out.print("Nhap ma phong can tra: ");
-        String maPhong = sc.nextLine().trim();
+    // public static void traPhong() {
+    //     System.out.print("Nhap ma phong can tra: ");
+    //     String maPhong = sc.nextLine().trim();
 
-        Phong phong = timPhongTheoMa(maPhong);
-        if (phong == null) {
-            System.out.println("Khong tim thay phong " + maPhong);
-            return;
-        }
+    //     Phong phong = timPhongTheoMa(maPhong);
+    //     if (phong == null) {
+    //         System.out.println("Khong tim thay phong " + maPhong);
+    //         return;
+    //     }
 
-        // Bỏ check if(!phong.isTrangThai()) vì hàm phong.traPhong() sẽ làm việc đó
+    //     // Bỏ check if(!phong.isTrangThai()) vì hàm phong.traPhong() sẽ làm việc đó
 
-        // Sửa lỗi: Nhận String trả về từ hàm traPhong()
-        String ketQuaTraPhong = phong.traPhong();
-        System.out.println(ketQuaTraPhong);
+    //     // Sửa lỗi: Nhận String trả về từ hàm traPhong()
+    //     String ketQuaTraPhong = phong.traPhong();
+    //     System.out.println(ketQuaTraPhong);
 
-        // Chỉ ghi nhận thanh toán NẾU trả phòng thành công
-        // (Kiểm tra xem thông báo trả về có phải là thông báo lỗi không)
-        if (!ketQuaTraPhong.contains("dang trong")) {
-            // Gọi hàm ghiNhanThanhToan (hàm này cũng trả về String sau khi sửa ở bước
-            // trước)
-            String ketQuaThanhToan = ThanhToan.ghiNhanThanhToan(phong);
-            System.out.println(ketQuaThanhToan);
-        }
-    }
+    //     // Chỉ ghi nhận thanh toán NẾU trả phòng thành công
+    //     // (Kiểm tra xem thông báo trả về có phải là thông báo lỗi không)
+    //     if (!ketQuaTraPhong.contains("dang trong")) {
+    //         // Gọi hàm ghiNhanThanhToan (hàm này cũng trả về String sau khi sửa ở bước
+    //         // trước)
+    //         String ketQuaThanhToan = ThanhToan.ghiNhanThanhToan(phong);
+    //         System.out.println(ketQuaThanhToan);
+    //     }
+    // }
 
     // ==== Xoa Phong (ĐÃ SỬA LOGIC + SỬA LỖI) =====
     public static void xoaPhong() {

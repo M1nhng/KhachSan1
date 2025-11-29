@@ -3,15 +3,15 @@ package view;
 import java.awt.*;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
-import java.time.LocalDate;
-import java.time.temporal.WeekFields;
+import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.AncestorEvent;
-import javax.swing.event.AncestorListener; // Import để xử lý sự kiện chuyển tab
+import javax.swing.event.AncestorListener;
 import javax.swing.table.DefaultTableModel;
+
+import model.ThanhToan;
 import repository.DoanhThuRepository;
 
 public class DoanhThuPanel extends JPanel {
@@ -19,16 +19,14 @@ public class DoanhThuPanel extends JPanel {
     private DoanhThuRepository doanhThuRepo;
     private JTable table;
     private DefaultTableModel model;
-    private JLabel lblTongDoanhThuNam;
-    private DecimalFormat vndFormat;
-
-    // Nút làm mới
+    private JLabel lblTongDoanhThuToanBo;
     private JButton btnLamMoi;
+    private DecimalFormat vndFormat;
 
     public DoanhThuPanel() {
         this.doanhThuRepo = new DoanhThuRepository();
 
-        // Định dạng tiền tệ
+        // Định dạng tiền tệ VNĐ
         DecimalFormatSymbols symbols = new DecimalFormatSymbols(new Locale("vi", "VN"));
         symbols.setGroupingSeparator('.');
         vndFormat = new DecimalFormat("###,### VND", symbols);
@@ -39,13 +37,10 @@ public class DoanhThuPanel extends JPanel {
 
         initComponents();
 
-        // --- (MỚI) TỰ ĐỘNG LOAD LẠI KHI CHUYỂN TAB ---
-        // Thêm sự kiện lắng nghe: Khi Panel này được hiển thị (chuyển tab tới đây),
-        // nó sẽ tự động chạy hàm loadData()
+        // Tự động tải lại dữ liệu khi người dùng chuyển sang tab này
         this.addAncestorListener(new AncestorListener() {
             @Override
             public void ancestorAdded(AncestorEvent event) {
-                // Khi tab được mở -> Tải lại dữ liệu
                 loadData();
             }
 
@@ -60,99 +55,84 @@ public class DoanhThuPanel extends JPanel {
     }
 
     private void initComponents() {
-        // --- Header ---
-        JPanel headerPanel = new JPanel(new BorderLayout()); // Dùng BorderLayout để đẩy nút sang phải
+        // --- HEADER ---
+        JPanel headerPanel = new JPanel(new BorderLayout());
         headerPanel.setBackground(MainForm.COLOR_BACKGROUND);
         headerPanel.setOpaque(false);
 
-        int currentYear = LocalDate.now().getYear();
-
-        JLabel lblTitle = new JLabel("Doanh Thu Theo Tuần - Năm " + currentYear);
-        lblTitle.setFont(new Font("Segoe UI", Font.BOLD, 20));
+        JLabel lblTitle = new JLabel("Lịch Sử Giao Dịch Chi Tiết");
+        lblTitle.setFont(new Font("Segoe UI", Font.BOLD, 22));
         lblTitle.setForeground(MainForm.COLOR_PRIMARY);
 
-        // --- (MỚI) NÚT LÀM MỚI ---
         btnLamMoi = CustomStyler.createStyledButton("Làm Mới");
-        btnLamMoi.setPreferredSize(new Dimension(150, 40));
+        btnLamMoi.setPreferredSize(new Dimension(120, 40));
+        btnLamMoi.setBackground(new Color(33, 150, 243)); // Màu xanh dương
         btnLamMoi.addActionListener(e -> {
-            loadData(); // Gọi hàm tải lại dữ liệu
+            loadData();
             JOptionPane.showMessageDialog(this, "Dữ liệu đã được cập nhật!");
         });
 
         headerPanel.add(lblTitle, BorderLayout.WEST);
         headerPanel.add(btnLamMoi, BorderLayout.EAST);
-
         add(headerPanel, BorderLayout.NORTH);
 
-        // --- Body: Bảng số liệu ---
-        String[] cols = { "Tuần Thứ", "Thời Gian", "Doanh Thu" };
+        // --- BODY: BẢNG DỮ LIỆU ---
+        // Các cột hiển thị khớp với CSDL
+        String[] cols = { "Mã Phòng", "Khách Hàng", "Chi Tiết Dịch Vụ", "Thời Gian TT", "Tổng Tiền" };
+
         model = new DefaultTableModel(cols, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
-                return false; // Không cho sửa bảng
+                return false; // Không cho sửa trực tiếp trên bảng
             }
         };
 
         table = new JTable(model);
         CustomStyler.styleTable(table);
 
-        add(new JScrollPane(table), BorderLayout.CENTER);
+        // Tùy chỉnh độ rộng cột cho đẹp mắt
+        table.getColumnModel().getColumn(0).setPreferredWidth(80); // Mã Phòng (nhỏ)
+        table.getColumnModel().getColumn(1).setPreferredWidth(150); // Tên Khách
+        table.getColumnModel().getColumn(2).setPreferredWidth(300); // Dịch Vụ (rộng nhất)
+        table.getColumnModel().getColumn(3).setPreferredWidth(150); // Thời Gian
+        table.getColumnModel().getColumn(4).setPreferredWidth(120); // Tiền
 
-        // --- Footer: Tổng doanh thu năm ---
+        JScrollPane scrollPane = new JScrollPane(table);
+        scrollPane.getViewport().setBackground(Color.WHITE);
+        add(scrollPane, BorderLayout.CENTER);
+
+        // --- FOOTER: TỔNG DOANH THU ---
         JPanel footerPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         footerPanel.setBackground(Color.WHITE);
-        lblTongDoanhThuNam = new JLabel("Tổng Doanh Thu: 0 VND");
-        lblTongDoanhThuNam.setFont(new Font("Segoe UI", Font.BOLD, 22));
-        lblTongDoanhThuNam.setForeground(Color.RED);
-        footerPanel.add(lblTongDoanhThuNam);
+        footerPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
 
+        lblTongDoanhThuToanBo = new JLabel("Tổng Doanh Thu: 0 VND");
+        lblTongDoanhThuToanBo.setFont(new Font("Segoe UI", Font.BOLD, 22));
+        lblTongDoanhThuToanBo.setForeground(new Color(231, 76, 60)); // Màu đỏ cam nổi bật
+
+        footerPanel.add(lblTongDoanhThuToanBo);
         add(footerPanel, BorderLayout.SOUTH);
     }
 
-    // Hàm tải dữ liệu từ DB
+    // Hàm tải dữ liệu chi tiết từ DB lên bảng
     public void loadData() {
         model.setRowCount(0); // Xóa dữ liệu cũ trên bảng
 
-        int currentYear = LocalDate.now().getYear();
+        List<ThanhToan> list = doanhThuRepo.getAll(); // Gọi hàm mới trong Repo
+        double tongTienAll = 0;
 
-        // Lấy dữ liệu mới nhất từ Database
-        Map<Integer, Double> data = doanhThuRepo.getDoanhThuTheoTuan(currentYear);
-        double tongNam = 0;
-
-        // Duyệt tuần tự từ tuần 1 đến tuần 53
-        for (int tuan = 1; tuan <= 53; tuan++) {
-            if (data.containsKey(tuan)) {
-                double doanhThu = data.get(tuan);
-                tongNam += doanhThu;
-
-                String timeRange = getDateRangeOfWeek(currentYear, tuan);
-
-                model.addRow(new Object[] {
-                        "Tuần " + tuan,
-                        timeRange,
-                        vndFormat.format(doanhThu)
-                });
-            }
+        for (ThanhToan tt : list) {
+            model.addRow(new Object[] {
+                    tt.getMaPhong(),
+                    tt.getTenKhach(),
+                    tt.getChiTietDichVu(), // Hiển thị chuỗi dịch vụ (VD: Coca, Mì gói...)
+                    tt.getThoiGian(), // Hiển thị ngày giờ
+                    vndFormat.format(tt.getSoTien())
+            });
+            tongTienAll += tt.getSoTien();
         }
 
-        // Cập nhật tổng tiền cuối trang
-        lblTongDoanhThuNam.setText("Tổng Doanh Thu Năm " + currentYear + ": " + vndFormat.format(tongNam));
-    }
-
-    // Hàm hỗ trợ tính ngày
-    private String getDateRangeOfWeek(int year, int week) {
-        try {
-            WeekFields weekFields = WeekFields.of(Locale.getDefault());
-            LocalDate firstDay = LocalDate.of(year, 1, 1)
-                    .with(weekFields.weekOfYear(), week)
-                    .with(weekFields.dayOfWeek(), 1);
-
-            LocalDate lastDay = firstDay.plusDays(6);
-
-            return firstDay.getDayOfMonth() + "/" + firstDay.getMonthValue() +
-                    " - " + lastDay.getDayOfMonth() + "/" + lastDay.getMonthValue();
-        } catch (Exception e) {
-            return "---";
-        }
+        // Cập nhật tổng tiền ở góc dưới
+        lblTongDoanhThuToanBo.setText("Tổng Doanh Thu Thực Tế: " + vndFormat.format(tongTienAll));
     }
 }

@@ -1,53 +1,83 @@
 package model;
 
+import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
-import java.text.DecimalFormat;
 
 public class ThanhToan {
+    // List tạm (nếu cần dùng cho logic cũ)
     private static List<ThanhToan> lichSuThanhToan = new ArrayList<>();
     private static double tongDoanhThu = 0;
+
     private static final DecimalFormat df = new DecimalFormat("#,###");
 
+    // Các trường dữ liệu khớp với bảng 'doanhthu' trong CSDL
     private String maPhong;
     private String tenKhach;
     private double soTien;
-    private String thoiGian;
-    private String chiTietDichVu; // (MỚI) Biến lưu danh sách dịch vụ
+    private String thoiGian; // Lưu cột NgayThanhToan
+    private String chiTietDichVu; // Lưu cột ChiTietDichVu
 
-    // Constructor cập nhật
+    public ThanhToan() {
+    }
+
+    // Constructor 1: Dùng khi TẠO MỚI thanh toán (lấy giờ hiện tại)
     public ThanhToan(String maPhong, String tenKhach, double soTien, String chiTietDichVu) {
         this.maPhong = maPhong;
         this.tenKhach = tenKhach;
         this.soTien = soTien;
-        this.chiTietDichVu = chiTietDichVu; // (MỚI)
-        this.thoiGian = LocalDateTime.now()
-                .format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"));
+        this.chiTietDichVu = chiTietDichVu;
+        this.thoiGian = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
     }
 
-    // Hàm cũ (giữ lại để tương thích với Main.java console nếu cần)
-    public static String ghiNhanThanhToan(Phong phong) {
-        return ghiNhanThanhToan(phong, 0, "Không có dịch vụ");
+    // Constructor 2: Dùng khi ĐỌC TỪ DATABASE (lấy giờ lịch sử)
+    public ThanhToan(String maPhong, String tenKhach, double soTien, String chiTietDichVu, String thoiGian) {
+        this.maPhong = maPhong;
+        this.tenKhach = tenKhach;
+        this.soTien = soTien;
+        this.chiTietDichVu = chiTietDichVu;
+        this.thoiGian = thoiGian;
     }
 
-    // (MỚI) Hàm ghi nhận thanh toán có thêm Dịch vụ & Tổng tiền thực tế
+    // --- GETTERS ---
+    public String getMaPhong() {
+        return maPhong;
+    }
+
+    public String getTenKhach() {
+        return tenKhach;
+    }
+
+    public double getSoTien() {
+        return soTien;
+    }
+
+    public String getThoiGian() {
+        return thoiGian;
+    }
+
+    public String getChiTietDichVu() {
+        return chiTietDichVu;
+    }
+
+    // --- HÀM STATIC HỖ TRỢ LOGIC CŨ (GIỮ LẠI ĐỂ KHÔNG BÁO LỖI Ở CHỖ KHÁC) ---
+
     public static String ghiNhanThanhToan(Phong phong, double tongTienThucTe, String dsDichVu) {
         if (phong == null || phong.getKhachThue() == null) {
             return "Không thể thanh toán! Phòng và khách không hợp lệ!";
         }
 
-        // Nếu tổng tiền thực tế = 0 (chưa tính) thì lấy giá phòng cơ bản
         double soTienCuoi = (tongTienThucTe > 0) ? tongTienThucTe : phong.getGiaPhong();
 
+        // Tạo đối tượng để lưu vào list tạm (quan trọng là bước lưu vào DB ở
+        // controller)
         ThanhToan tt = new ThanhToan(
                 phong.getMaPhong(),
                 phong.getKhachThue().getTen(),
                 soTienCuoi,
-                dsDichVu // (MỚI) Lưu chuỗi dịch vụ vào lịch sử
-        );
+                dsDichVu);
 
         lichSuThanhToan.add(tt);
         tongDoanhThu += soTienCuoi;
@@ -55,32 +85,28 @@ public class ThanhToan {
         return "Thanh toán thành công! Tổng tiền: " + df.format(soTienCuoi) + " VND";
     }
 
-    public static void thanhToanPhong() {
-        // (Code console giữ nguyên, không ảnh hưởng)
-        System.out.println("Chức năng này trên Console chưa hỗ trợ chi tiết dịch vụ.");
+    // Giữ lại để tương thích code cũ (nếu có gọi)
+    public static String ghiNhanThanhToan(Phong phong) {
+        return ghiNhanThanhToan(phong, 0, "Không có dịch vụ");
     }
 
     public static void xemLichSuThanhToan() {
         if (lichSuThanhToan.isEmpty()) {
-            System.out.println("Chưa có thanh toán nào!");
+            System.out.println("Chưa có thanh toán nào (trên RAM)!");
             return;
         }
-        System.out.println("\n===== LỊCH SỬ THANH TOÁN =====");
         for (ThanhToan tt : lichSuThanhToan) {
             System.out.println(tt);
         }
-        System.out.println("================================");
     }
 
     public static void xemDoanhThu() {
-        System.out.println("Tổng doanh thu: " + df.format(tongDoanhThu) + " VND");
+        System.out.println("Tổng doanh thu (phiên này): " + df.format(tongDoanhThu) + " VND");
     }
 
     @Override
     public String toString() {
-        // (MỚI) Cập nhật hiển thị có thêm chi tiết dịch vụ
-        return String.format(
-                "Phòng: %s | Khach: %s | Tiền: %s VND | Ngày: %s\n   -> Dịch vụ: %s",
-                maPhong, tenKhach, df.format(soTien), thoiGian, chiTietDichVu);
+        return String.format("Phòng: %s | Khách: %s | Tiền: %s | DV: %s | Ngày: %s",
+                maPhong, tenKhach, df.format(soTien), chiTietDichVu, thoiGian);
     }
 }
