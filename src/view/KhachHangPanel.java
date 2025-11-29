@@ -169,14 +169,18 @@ public class KhachHangPanel extends JPanel {
             return;
         }
 
-        KhachHang kh = new KhachHang(ten, cmnd, sdt, email);
+        String newID = IdGenerator.generateNextId("khachhang", "KH", "MaKH");
+
+        // 5. Tạo đối tượng với ID vừa sinh
+        KhachHang kh = new KhachHang(newID, ten, cmnd, sdt, email);
 
         if (khachHangRepo.add(kh)) {
-            JOptionPane.showMessageDialog(this, "Thêm khách hàng thành công! ID mới: " + kh.getMaID());
-            loadCustomerData(); // Tải lại bảng
+            JOptionPane.showMessageDialog(this, "Thêm khách hàng thành công! ID: " + newID);
+            loadCustomerData();
             clearForm();
         } else {
-            JOptionPane.showMessageDialog(this, "Thêm thất bại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Thêm thất bại! Có thể lỗi kết nối CSDL.", "Lỗi",
+                    JOptionPane.ERROR_MESSAGE);
         }
     }
     /**

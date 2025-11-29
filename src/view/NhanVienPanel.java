@@ -209,17 +209,20 @@ public class NhanVienPanel extends JPanel {
             }
 
             // Tạo nhân viên mới (ID sẽ tự tăng dựa trên cnt trong Person)
-            NhanVien nv = new NhanVien(ten, cmnd, sdt, luong, chucVu);
+            String newID = IdGenerator.generateNextId("nhanvien", "NV", "MaNV");
+
+            // 5. Tạo đối tượng và thêm
+            NhanVien nv = new NhanVien(newID, ten, cmnd, sdt, luong, chucVu);
 
             if (nhanVienRepo.add(nv)) {
-                JOptionPane.showMessageDialog(this, "Thêm thành công! ID: " + nv.getMaID());
-                loadData();
+                JOptionPane.showMessageDialog(this, "Thêm thành công! ID: " + newID);
+                loadNhanVienData();
                 clearForm();
             } else {
                 JOptionPane.showMessageDialog(this, "Thêm thất bại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
             }
         } catch (NumberFormatException ex) {
-            JOptionPane.showMessageDialog(this, "Lương phải là số!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Lương không hợp lệ!", "Lỗi", JOptionPane.ERROR_MESSAGE);
         }
     }
 
