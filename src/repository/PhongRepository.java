@@ -87,42 +87,11 @@ public class PhongRepository implements IPhongRepository {
         return dsPhong;
     }
 
-    @Override
-    public Phong getById(String id) {
-        String sql = "SELECT p.*, kh.Ten, kh.SoCMND, kh.SoDienThoai, kh.Email " +
-                "FROM phong p " +
-                "LEFT JOIN khachhang kh ON p.MaKH = kh.MaKH " +
-                "WHERE p.MaPhong = ?";
-        try (Connection conn = DatabaseConnection.getConnection();
-                PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, id);
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    return mapResultSetToPhong(rs);
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
 
     @Override
     public boolean add(Phong p) {
-        String sql = "INSERT INTO phong (MaPhong, LoaiPhong, GiaPhong, TrangThai) VALUES (?, ?, ?, ?)";
-        try (Connection conn = DatabaseConnection.getConnection();
-                PreparedStatement ps = conn.prepareStatement(sql)) {
-
-            ps.setString(1, p.getMaPhong());
-            ps.setString(2, p.getLoaiPhong());
-            ps.setDouble(3, p.getGiaPhong());
-            ps.setBoolean(4, false);    
-
-            return ps.executeUpdate() > 0;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
+        //
+        return false;
     }
 
     @Override
@@ -152,14 +121,15 @@ public class PhongRepository implements IPhongRepository {
 
     @Override
     public boolean delete(String id) {
-        String sql = "DELETE FROM phong WHERE MaPhong = ?";
-        try (Connection conn = DatabaseConnection.getConnection();
-                PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, id);
-            return ps.executeUpdate() > 0;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
+        // String sql = "DELETE FROM phong WHERE MaPhong = ?";
+        // try (Connection conn = DatabaseConnection.getConnection();
+        //         PreparedStatement ps = conn.prepareStatement(sql)) {
+        //     ps.setString(1, id);
+        //     return ps.executeUpdate() > 0;
+        // } catch (SQLException e) {
+        //     e.printStackTrace();
+        //     return false;
+        // }
+        return false;
     }
 }

@@ -68,7 +68,7 @@ public class KhachHangPanel extends JPanel {
         btnThem = CustomStyler.createStyledButton("Thêm Mới");
         btnSua = CustomStyler.createStyledButton("Cập Nhật");
         btnXoa = CustomStyler.createStyledButton("Xóa");
-        btnLamMoi = CustomStyler.createStyledButton("Làm Mới Form");
+        btnLamMoi = CustomStyler.createStyledButton("Làm Mới");
 
         buttonPanel.add(btnThem);
         buttonPanel.add(btnSua);

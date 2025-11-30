@@ -51,21 +51,21 @@ public class DoanhThuRepository {
         return list;
     }
 
-    public Map<Integer, Double> getDoanhThuTheoTuan(int year) {
-        Map<Integer, Double> stats = new HashMap<>();
-        String sql = "SELECT WEEK(NgayThanhToan, 1) as Tuan, SUM(SoTien) as TongTien " +
-                "FROM doanhthu WHERE YEAR(NgayThanhToan) = ? GROUP BY Tuan ORDER BY Tuan ASC";
+    // public Map<Integer, Double> getDoanhThuTheoTuan(int year) {
+    //     Map<Integer, Double> stats = new HashMap<>();
+    //     String sql = "SELECT WEEK(NgayThanhToan, 1) as Tuan, SUM(SoTien) as TongTien " +
+    //             "FROM doanhthu WHERE YEAR(NgayThanhToan) = ? GROUP BY Tuan ORDER BY Tuan ASC";
 
-        try (Connection conn = DatabaseConnection.getConnection();
-                PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, year);
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                stats.put(rs.getInt("Tuan"), rs.getDouble("TongTien"));
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return stats;
-    }
+    //     try (Connection conn = DatabaseConnection.getConnection();
+    //             PreparedStatement ps = conn.prepareStatement(sql)) {
+    //         ps.setInt(1, year);
+    //         ResultSet rs = ps.executeQuery();
+    //         while (rs.next()) {
+    //             stats.put(rs.getInt("Tuan"), rs.getDouble("TongTien"));
+    //         }
+    //     } catch (SQLException e) {
+    //         e.printStackTrace();
+    //     }
+    //     return stats;
+    // }
 }

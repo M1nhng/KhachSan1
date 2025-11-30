@@ -1,6 +1,6 @@
 package repository;
 
-import model.NhanVien; // Import model NhanVien
+import model.NhanVien; 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -43,20 +43,20 @@ public class NhanVienRepository implements INhanVienRepository {
 
     @Override
     public NhanVien getByName(String ten) {
-        String sql = "SELECT * FROM nhanvien WHERE Ten LIKE ?";
+        // String sql = "SELECT * FROM nhanvien WHERE Ten LIKE ?";
 
-        try (Connection conn = DatabaseConnection.getConnection();
-                PreparedStatement ps = conn.prepareStatement(sql)) {
+        // try (Connection conn = DatabaseConnection.getConnection();
+        //         PreparedStatement ps = conn.prepareStatement(sql)) {
 
-            ps.setString(1, "%" + ten + "%");
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    return mapResultSetToNhanVien(rs);
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        //     ps.setString(1, "%" + ten + "%");
+        //     try (ResultSet rs = ps.executeQuery()) {
+        //         if (rs.next()) {
+        //             return mapResultSetToNhanVien(rs);
+        //         }
+        //     }
+        // } catch (SQLException e) {
+        //     e.printStackTrace();
+        // }
         return null;
     }
 
@@ -121,22 +121,4 @@ public class NhanVienRepository implements INhanVienRepository {
         }
     }
 
-    @Override
-    public NhanVien getById(String id) {
-        String sql = "SELECT * FROM nhanvien WHERE MaNV = ?";
-
-        try (Connection conn = DatabaseConnection.getConnection();
-                PreparedStatement ps = conn.prepareStatement(sql)) {
-
-            ps.setString(1, id);
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    return mapResultSetToNhanVien(rs);   
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
 }

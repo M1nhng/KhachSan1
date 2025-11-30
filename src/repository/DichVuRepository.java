@@ -79,8 +79,5 @@ public class DichVuRepository implements IDichVuRepository {
         }
     }
 
-    @Override
-    public DichVu getById(String id) {
-        return null;
-    }
+
 }

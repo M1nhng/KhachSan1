@@ -63,7 +63,6 @@ public class DoanhThuPanel extends JPanel {
 
         btnLamMoi = CustomStyler.createStyledButton("Làm Mới");
         btnLamMoi.setPreferredSize(new Dimension(120, 40));
-        btnLamMoi.setBackground(new Color(33, 150, 243)); 
         btnLamMoi.addActionListener(e -> {
             loadData();
             JOptionPane.showMessageDialog(this, "Dữ liệu đã được cập nhật!");

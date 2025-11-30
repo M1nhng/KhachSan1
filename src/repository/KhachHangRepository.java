@@ -42,20 +42,20 @@ public class KhachHangRepository implements IKhachHangRepository {
 
     @Override
     public KhachHang getByName(String ten) {
-        String sql = "SELECT * FROM khachhang WHERE Ten like ?";
+        // String sql = "SELECT * FROM khachhang WHERE Ten like ?";
 
-        try (Connection conn = DatabaseConnection.getConnection();
-                PreparedStatement ps = conn.prepareStatement(sql)) {
+        // try (Connection conn = DatabaseConnection.getConnection();
+        //         PreparedStatement ps = conn.prepareStatement(sql)) {
 
-            ps.setString(1, ten);
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    return mapResultSetToKhachHang(rs);
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        //     ps.setString(1, ten);
+        //     try (ResultSet rs = ps.executeQuery()) {
+        //         if (rs.next()) {
+        //             return mapResultSetToKhachHang(rs);
+        //         }
+        //     }
+        // } catch (SQLException e) {
+        //     e.printStackTrace();
+        // }
         return null;
     }
 
@@ -113,25 +113,6 @@ public class KhachHangRepository implements IKhachHangRepository {
             e.printStackTrace();
             return false;
         }
-    }
-
-    @Override
-    public KhachHang getById(String id) {
-        String sql = "SELECT * FROM khachhang WHERE MaKH = ?";
-
-        try (Connection conn = DatabaseConnection.getConnection();
-                PreparedStatement ps = conn.prepareStatement(sql)) {
-
-            ps.setString(1, id);
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    return mapResultSetToKhachHang(rs);
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return null;
     }
 
 }
