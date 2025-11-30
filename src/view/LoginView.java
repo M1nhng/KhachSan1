@@ -14,7 +14,7 @@ public class LoginView extends JFrame {
     private JTextField txtUsername;
     private JPasswordField txtPassword;
     private JCheckBox chkRemember;
-    private JCheckBox chkShowPass; // Mới thêm
+    private JCheckBox chkShowPass;
     private JButton btnLogin;
     private JButton btnCancel;
 
@@ -27,8 +27,6 @@ public class LoginView extends JFrame {
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setResizable(false);
-
-        // Không gọi setUIFont ở đây nữa
 
         cardLayout = new CardLayout();
         container = new JPanel(cardLayout);
@@ -52,7 +50,6 @@ public class LoginView extends JFrame {
         container.add(screen, "login");
         setContentPane(container);
 
-        // Tự động focus vào ô username khi mở form
         this.addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
             public void windowOpened(java.awt.event.WindowEvent e) {
@@ -65,7 +62,6 @@ public class LoginView extends JFrame {
         JPanel root = new JPanel(new BorderLayout());
         root.setOpaque(false);
 
-        // Header
         JPanel header = new JPanel();
         header.setOpaque(false);
         header.setLayout(new BoxLayout(header, BoxLayout.Y_AXIS));
@@ -82,7 +78,6 @@ public class LoginView extends JFrame {
         header.add(Box.createVerticalStrut(18));
         root.add(header, BorderLayout.NORTH);
 
-        // Form
         JPanel form = new JPanel();
         form.setOpaque(false);
         form.setLayout(new BoxLayout(form, BoxLayout.Y_AXIS));
@@ -99,7 +94,6 @@ public class LoginView extends JFrame {
         form.add(txtPassword);
         form.add(Box.createVerticalStrut(10));
 
-        // Options: Ghi nhớ & Hiện mật khẩu
         JPanel opts = new JPanel(new BorderLayout());
         opts.setOpaque(false);
 
@@ -123,7 +117,6 @@ public class LoginView extends JFrame {
         form.add(opts);
         form.add(Box.createVerticalStrut(14));
 
-        // Button Login
         btnLogin = primaryButton("Đăng nhập");
         btnLogin.setAlignmentX(Component.CENTER_ALIGNMENT);
         btnLogin.addActionListener(e -> {
@@ -135,7 +128,6 @@ public class LoginView extends JFrame {
 
         root.add(form, BorderLayout.CENTER);
 
-        // Footer
         JPanel south = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         south.setOpaque(false);
         btnCancel = outlinedButton("Thoát");
@@ -148,7 +140,6 @@ public class LoginView extends JFrame {
         south.add(btnCancel);
         root.add(south, BorderLayout.SOUTH);
 
-        // Key Bindings
         root.registerKeyboardAction(e -> btnLogin.doClick(), KeyStroke.getKeyStroke("ENTER"),
                 JComponent.WHEN_IN_FOCUSED_WINDOW);
         root.registerKeyboardAction(e -> btnCancel.doClick(), KeyStroke.getKeyStroke("ESCAPE"),
@@ -157,7 +148,6 @@ public class LoginView extends JFrame {
         return root;
     }
 
-    // Các hàm helper và getter/setter
     public void setLoginHandler(LoginHandler loginHandler) {
         this.loginHandler = loginHandler;
     }
@@ -184,7 +174,6 @@ public class LoginView extends JFrame {
 
     private static JButton primaryButton(String text) {
         JButton button = new JButton(text);
-        // Dùng màu cứng hoặc tham chiếu MainForm nếu chắc chắn
         button.setBackground(new Color(76, 175, 80));
         button.setForeground(Color.WHITE);
         button.setFont(new Font("Segoe UI", Font.BOLD, 15));

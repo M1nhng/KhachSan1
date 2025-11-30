@@ -1,4 +1,4 @@
-package view; // Phải cùng package với MainForm
+package view;
 
 import java.awt.Color;
 import java.awt.Cursor;
@@ -7,9 +7,7 @@ import java.awt.Font;
 import javax.swing.*;
 import javax.swing.table.JTableHeader;
 
-/**
- * Lớp tiện ích để style các components Swing theo màu xanh lá
- */
+
 public class CustomStyler {
 
     private static final Color COLOR_PRIMARY = MainForm.COLOR_PRIMARY;
@@ -20,9 +18,7 @@ public class CustomStyler {
     private static final Font FONT_FIELD = new Font("Segoe UI", Font.PLAIN, 14);
     private static final Font FONT_BUTTON = new Font("Segoe UI", Font.BOLD, 14);
 
-    /**
-     * Tạo một JLabel đã được style
-     */
+  
     public static JLabel createStyledLabel(String text) {
         JLabel label = new JLabel(text);
         label.setFont(FONT_LABEL);
@@ -30,9 +26,7 @@ public class CustomStyler {
         return label;
     }
 
-    /**
-     * Style một JTextField đã có
-     */
+   
     public static JTextField createStyledTextField(JTextField textField) {
         textField.setFont(FONT_FIELD);
         textField.setForeground(COLOR_TEXT);
@@ -42,9 +36,6 @@ public class CustomStyler {
         return textField;
     }
 
-    /**
-     * Tạo một JButton đã được style
-     */
     public static JButton createStyledButton(String text) {
         JButton button = new JButton(text);
         button.setFont(FONT_BUTTON);
@@ -68,9 +59,6 @@ public class CustomStyler {
         return button;
     }
 
-    /**
-     * Style một JTable đã có
-     */
     public static void styleTable(JTable table) {
         table.setFont(FONT_FIELD);
         table.setForeground(COLOR_TEXT);

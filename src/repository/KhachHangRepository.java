@@ -10,12 +10,9 @@ import java.util.List;
 
 public class KhachHangRepository implements IKhachHangRepository {
 
-    // Phương thức này ánh xạ dữ liệu từ ResultSet (CSDL) sang đối tượng Java
     private KhachHang mapResultSetToKhachHang(ResultSet rs) throws SQLException {
-        // 1. Dùng constructor rỗng để tạo đối tượng
         KhachHang kh = new KhachHang();
 
-        // 2. Dùng các hàm setter (bao gồm cả setMaID mới) để nạp dữ liệu
         kh.setMaID(rs.getString("MaKH"));
         kh.setTen(rs.getString("Ten"));
         kh.setSoCMND(rs.getString("SoCMND"));
@@ -28,14 +25,13 @@ public class KhachHangRepository implements IKhachHangRepository {
     @Override
     public List<KhachHang> getAll() {
         List<KhachHang> dsKhachHang = new ArrayList<>();
-        String sql = "SELECT * FROM khachhang"; //
+        String sql = "SELECT * FROM khachhang";
 
         try (Connection conn = DatabaseConnection.getConnection();
                 PreparedStatement ps = conn.prepareStatement(sql);
                 ResultSet rs = ps.executeQuery()) {
 
             while (rs.next()) {
-                // Sử dụng hàm mapResultSetToKhachHang
                 dsKhachHang.add(mapResultSetToKhachHang(rs));
             }
         } catch (SQLException e) {
@@ -70,7 +66,6 @@ public class KhachHangRepository implements IKhachHangRepository {
         try (Connection conn = DatabaseConnection.getConnection();
                 PreparedStatement ps = conn.prepareStatement(sql)) {
 
-            // Lấy MaID đã được tạo bởi constructor của KhachHang
             ps.setString(1, kh.getMaID());
             ps.setString(2, kh.getTen());
             ps.setString(3, kh.getSoCMND());

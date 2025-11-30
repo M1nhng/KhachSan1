@@ -1,6 +1,6 @@
 package model;
 
-public class Person {
+public abstract class Person {
     private String maID;
     private String ten;
     private String soCMND;
@@ -15,6 +15,9 @@ public class Person {
         this.soCMND = soCMND;
         this.soDienThoai = soDienThoai;
     }
+
+    // Phương thức trừu tượng (Abstraction)
+    public abstract String getVaiTro();
 
     public String getMaID() {
         return maID;

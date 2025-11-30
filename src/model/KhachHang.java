@@ -8,7 +8,7 @@ public class KhachHang extends Person {
     }
 
     public KhachHang(String maID, String ten, String soCMND, String soDienThoai, String email) {
-        super(maID, ten, soCMND, soDienThoai); 
+        super(maID, ten, soCMND, soDienThoai);
         this.email = email;
     }
 
@@ -18,6 +18,11 @@ public class KhachHang extends Person {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    @Override
+    public String getVaiTro() {
+        return "Khách Hàng";
     }
 
     @Override

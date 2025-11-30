@@ -1,4 +1,4 @@
-package view; // Phải cùng package với MainForm và KhachHangPanel
+package view;
 
 import java.awt.*;
 import java.util.List;
@@ -6,13 +6,13 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
-// CÁC IMPORT MỚI ĐỂ FORMAT SỐ
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.Locale;
 
-import model.NhanVien; // Import model NhanVien
-import repository.INhanVienRepository; // Import repository NhanVien
+import model.NhanVien;
+import repository.INhanVienRepository;
+import exception.InvalidInputException;
 
 public class NhanVienPanel extends JPanel {
 
@@ -24,10 +24,8 @@ public class NhanVienPanel extends JPanel {
     private JTextField txtMaNV, txtTen, txtCMND, txtSDT, txtChucVu, txtLuong;
     private JButton btnThem, btnSua, btnXoa, btnLamMoi;
 
-    // (MỚI) Đối tượng để format tiền tệ
     private DecimalFormat vndFormat;
 
-    // Màu sắc
     private static final Color COLOR_PRIMARY = MainForm.COLOR_PRIMARY;
     private static final Color COLOR_BACKGROUND = MainForm.COLOR_BACKGROUND;
     private static final Color COLOR_HEADER = MainForm.COLOR_HEADER;
@@ -39,27 +37,22 @@ public class NhanVienPanel extends JPanel {
         setBackground(COLOR_BACKGROUND);
         setBorder(new EmptyBorder(10, 10, 10, 10));
 
-        // (MỚI) Khởi tạo formatter kiểu Việt Nam (100.000VND)
-        // Dùng mẫu "###,###" nhưng thay dấu , bằng dấu .
         DecimalFormatSymbols symbols = new DecimalFormatSymbols(new Locale("vi", "VN"));
-        symbols.setGroupingSeparator('.'); // Dùng dấu chấm
+        symbols.setGroupingSeparator('.');
         vndFormat = new DecimalFormat("###,### VND", symbols);
 
-        // (Code cũ)
         initComponents();
         initActionListeners();
         loadNhanVienData();
     }
 
     private void initComponents() {
-        // --- Panel Form (NORTH) ---
         JPanel formPanel = new JPanel(new BorderLayout(10, 10));
         formPanel.setBackground(COLOR_BACKGROUND);
 
         JPanel fieldsPanel = new JPanel(new GridLayout(6, 2, 5, 5));
         fieldsPanel.setBackground(COLOR_BACKGROUND);
 
-        // Tạo các fields
         txtMaNV = new JTextField();
         txtTen = new JTextField();
         txtCMND = new JTextField();
@@ -67,7 +60,6 @@ public class NhanVienPanel extends JPanel {
         txtChucVu = new JTextField();
         txtLuong = new JTextField();
 
-        // Style cho các fields và labels
         fieldsPanel.add(CustomStyler.createStyledLabel("Mã NV:"));
         fieldsPanel.add(CustomStyler.createStyledTextField(txtMaNV));
         fieldsPanel.add(CustomStyler.createStyledLabel("Tên Nhân Viên:"));
@@ -84,7 +76,6 @@ public class NhanVienPanel extends JPanel {
         txtMaNV.setEditable(false);
         txtMaNV.setText("Tự động hoặc chọn từ bảng");
 
-        // Panel nút bấm
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 5));
         buttonPanel.setBackground(COLOR_BACKGROUND);
 
@@ -101,7 +92,6 @@ public class NhanVienPanel extends JPanel {
         formPanel.add(fieldsPanel, BorderLayout.CENTER);
         formPanel.add(buttonPanel, BorderLayout.SOUTH);
 
-        // --- Panel Bảng (CENTER) ---
         String[] columnNames = { "Mã NV", "Tên", "CMND", "SĐT", "Lương", "Chức vụ" };
         model = new DefaultTableModel(columnNames, 0) {
             @Override
@@ -125,7 +115,6 @@ public class NhanVienPanel extends JPanel {
         btnXoa.addActionListener(e -> xoaNhanVien());
         btnLamMoi.addActionListener(e -> clearForm());
 
-        // Sự kiện click vào 1 dòng trên bảng
         table.getSelectionModel().addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting() && table.getSelectedRow() != -1) {
                 int selectedRow = table.getSelectedRow();
@@ -133,34 +122,20 @@ public class NhanVienPanel extends JPanel {
                 txtTen.setText(model.getValueAt(selectedRow, 1).toString());
                 txtCMND.setText(model.getValueAt(selectedRow, 2).toString());
                 txtSDT.setText(model.getValueAt(selectedRow, 3).toString());
-
-                // --- SỬA LẠI ĐOẠN NÀY ---
-
-                // Cột 5 là Chức Vụ (dựa theo code khai báo columnNames của bạn)
                 txtChucVu.setText(model.getValueAt(selectedRow, 5).toString());
 
-                // Cột 4 là Lương (dựa theo code khai báo columnNames của bạn)
-                // Lấy chuỗi đã định dạng từ bảng (ví dụ: "1.000.000 VND")
                 String luongFormatted = model.getValueAt(selectedRow, 4).toString();
-
-                // Chuyển nó về dạng số (ví dụ: "1000000")
                 String luongUnformatted = luongFormatted
-                        .replace("VND", "") // Xóa chữ VND
-                        .replace(".", "") // Xóa dấu chấm
-                        .trim(); // Xóa khoảng trắng
-
-                // Đặt số đã "lột" vào ô text
+                        .replace("VND", "")
+                        .replace(".", "")
+                        .trim();
                 txtLuong.setText(luongUnformatted);
-                // ===================================
 
                 txtMaNV.setEditable(false);
             }
         });
     }
 
-    /**
-     * Tải dữ liệu từ Repository lên JTable
-     */
     private void loadNhanVienData() {
         model.setRowCount(0);
         List<NhanVien> list = nhanVienRepo.getAll();
@@ -170,21 +145,7 @@ public class NhanVienPanel extends JPanel {
                     vndFormat.format(nv.getLuongCoBan()), nv.getChucVu()
             });
         }
-        // Cập nhật text field mã NV để hiển thị mã tiếp theo
         txtMaNV.setText(IdGenerator.generateNextId("nhanvien", "NV", "MaNV"));
-    }
-
-    /**
-     * Chức năng Thêm Nhân Viên (Không thay đổi)
-     */
-    private void loadData() {
-        model.setRowCount(0);
-        List<NhanVien> list = nhanVienRepo.getAll();
-        for (NhanVien nv : list) {
-            model.addRow(new Object[] {
-                    nv.getMaID(), nv.getTen(), nv.getSoCMND(), nv.getSoDienThoai(), nv.getLuongCoBan(), nv.getChucVu()
-            });
-        }
     }
 
     private void themNhanVien() {
@@ -196,26 +157,19 @@ public class NhanVienPanel extends JPanel {
             double luong = Double.parseDouble(txtLuong.getText());
 
             if (ten.isEmpty() || cmnd.isEmpty() || chucVu.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Tên, CMND và chức vụ không được để trống!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-                return;
+                throw new InvalidInputException("Tên, CMND và chức vụ không được để trống!");
             }
             if (cmnd.length() != 12) {
-                JOptionPane.showMessageDialog(this, "So CMND phai du 12 so!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-                return;
+                throw new InvalidInputException("So CMND phai du 12 so!");
             }
             if (sdt.length() != 10) {
-                JOptionPane.showMessageDialog(this, "So dien thoai phai du 10 so!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-                return;
+                throw new InvalidInputException("So dien thoai phai du 10 so!");
             }
-            if(luong < 0){
-                JOptionPane.showMessageDialog(this, "So dien thoai phai du 10 so!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-                return;
+            if (luong < 0) {
+                throw new InvalidInputException("Lương không được âm!");
             }
 
-            // Tạo nhân viên mới (ID sẽ tự tăng dựa trên cnt trong Person)
             String newID = IdGenerator.generateNextId("nhanvien", "NV", "MaNV");
-
-            // 5. Tạo đối tượng và thêm
             NhanVien nv = new NhanVien(newID, ten, cmnd, sdt, luong, chucVu);
 
             if (nhanVienRepo.add(nv)) {
@@ -227,12 +181,11 @@ public class NhanVienPanel extends JPanel {
             }
         } catch (NumberFormatException ex) {
             JOptionPane.showMessageDialog(this, "Lương không hợp lệ!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+        } catch (InvalidInputException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Lỗi nhập liệu", JOptionPane.WARNING_MESSAGE);
         }
     }
 
-    /**
-     * Chức năng Sửa Nhân Viên (Không thay đổi)
-     */
     private void suaNhanVien() {
         String maNV = txtMaNV.getText();
         if (maNV.isEmpty() || maNV.equals("Tự động hoặc chọn từ bảng")) {
@@ -242,15 +195,19 @@ public class NhanVienPanel extends JPanel {
         }
 
         try {
-            double luong = Double.parseDouble(txtLuong.getText()); // Đọc từ ô text (đã là số)
+            double luong = Double.parseDouble(txtLuong.getText());
 
-            NhanVien nv = new NhanVien(); // Cần constructor rỗng
+            if (luong < 0) {
+                throw new InvalidInputException("Lương không được âm!");
+            }
+
+            NhanVien nv = new NhanVien();
             nv.setMaID(maNV);
             nv.setTen(txtTen.getText());
             nv.setSoCMND(txtCMND.getText());
             nv.setSoDienThoai(txtSDT.getText());
             nv.setChucVu(txtChucVu.getText());
-            nv.setLuongCoBan(luong); // Dùng setLuongCoBan()
+            nv.setLuongCoBan(luong);
 
             if (nhanVienRepo.update(nv)) {
                 JOptionPane.showMessageDialog(this, "Cập nhật thành công!");
@@ -261,12 +218,11 @@ public class NhanVienPanel extends JPanel {
             }
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(this, "Lương phải là một con số!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+        } catch (InvalidInputException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Lỗi nhập liệu", JOptionPane.WARNING_MESSAGE);
         }
     }
 
-    /**
-     * Chức năng Xóa Nhân Viên (Không thay đổi)
-     */
     private void xoaNhanVien() {
         String maNV = txtMaNV.getText();
         if (maNV.isEmpty() || maNV.equals("Tự động hoặc chọn từ bảng")) {
@@ -291,9 +247,6 @@ public class NhanVienPanel extends JPanel {
         }
     }
 
-    /**
-     * Dọn dẹp form nhập liệu (Không thay đổi)
-     */
     private void clearForm() {
         txtMaNV.setText("Tự động hoặc chọn từ bảng");
         txtMaNV.setEditable(false);

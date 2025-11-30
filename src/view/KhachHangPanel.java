@@ -1,16 +1,13 @@
-package view; // Phải cùng package với MainForm
+package view; 
 
 import java.awt.*;
-import java.awt.event.*;
 import java.util.List;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.JTableHeader;
 
-import model.KhachHang; // Import model KhachHang
-import model.NhanVien;
-import repository.IKhachHangRepository; // Import repository
+import model.KhachHang;
+import repository.IKhachHangRepository;
 
 public class KhachHangPanel extends JPanel {
 
@@ -22,7 +19,6 @@ public class KhachHangPanel extends JPanel {
     private JTextField txtMaKH, txtTen, txtCMND, txtSDT, txtEmail;
     private JButton btnThem, btnSua, btnXoa, btnLamMoi;
 
-    // Màu sắc
     private static final Color COLOR_PRIMARY = MainForm.COLOR_PRIMARY;
     private static final Color COLOR_BACKGROUND = MainForm.COLOR_BACKGROUND;
     private static final Color COLOR_HEADER = MainForm.COLOR_HEADER;
@@ -40,21 +36,18 @@ public class KhachHangPanel extends JPanel {
     }
 
     private void initComponents() {
-        // --- Panel Form (NORTH) ---
         JPanel formPanel = new JPanel(new BorderLayout(10, 10));
         formPanel.setBackground(COLOR_BACKGROUND);
 
         JPanel fieldsPanel = new JPanel(new GridLayout(5, 2, 5, 5));
         fieldsPanel.setBackground(COLOR_BACKGROUND);
 
-        // Tạo các fields
         txtMaKH = new JTextField();
         txtTen = new JTextField();
         txtCMND = new JTextField();
         txtSDT = new JTextField();
         txtEmail = new JTextField();
 
-        // Style cho các fields và labels
         fieldsPanel.add(CustomStyler.createStyledLabel("Mã KH:"));
         fieldsPanel.add(CustomStyler.createStyledTextField(txtMaKH));
         fieldsPanel.add(CustomStyler.createStyledLabel("Tên Khách Hàng:"));
@@ -66,7 +59,7 @@ public class KhachHangPanel extends JPanel {
         fieldsPanel.add(CustomStyler.createStyledLabel("Email:"));
         fieldsPanel.add(CustomStyler.createStyledTextField(txtEmail));
 
-        txtMaKH.setEditable(false); // Mã KH không nên sửa, nó được tạo tự động hoặc dùng để chọn
+        txtMaKH.setEditable(false);
         txtMaKH.setText("Tự động hoặc chọn từ bảng");
 
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 5));
@@ -85,12 +78,11 @@ public class KhachHangPanel extends JPanel {
         formPanel.add(fieldsPanel, BorderLayout.CENTER);
         formPanel.add(buttonPanel, BorderLayout.SOUTH);
 
-        // --- Panel Bảng (CENTER) ---
         String[] columnNames = { "Mã KH", "Tên", "CMND", "SĐT", "Email" };
         model = new DefaultTableModel(columnNames, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
-                return false; // Không cho phép sửa trực tiếp trên bảng
+                return false;
             }
         };
         table = new JTable(model);
@@ -99,25 +91,16 @@ public class KhachHangPanel extends JPanel {
         JScrollPane scrollPane = new JScrollPane(table);
         scrollPane.getViewport().setBackground(Color.WHITE);
 
-        // Thêm các components vào panel chính
         add(formPanel, BorderLayout.NORTH);
         add(scrollPane, BorderLayout.CENTER);
     }
 
     private void initActionListeners() {
-        // Nút Thêm
         btnThem.addActionListener(e -> themKhachHang());
-
-        // Nút Sửa
         btnSua.addActionListener(e -> suaKhachHang());
-
-        // Nút Xóa
         btnXoa.addActionListener(e -> xoaKhachHang());
-
-        // Nút Làm Mới
         btnLamMoi.addActionListener(e -> clearForm());
 
-        // Sự kiện click vào 1 dòng trên bảng
         table.getSelectionModel().addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting() && table.getSelectedRow() != -1) {
                 int selectedRow = table.getSelectedRow();
@@ -127,7 +110,7 @@ public class KhachHangPanel extends JPanel {
                 txtSDT.setText(model.getValueAt(selectedRow, 3).toString());
                 txtEmail.setText(model.getValueAt(selectedRow, 4).toString());
 
-                txtMaKH.setEditable(false); // Không cho sửa Mã KH
+                txtMaKH.setEditable(false);
             }
         });
     }
@@ -143,13 +126,9 @@ public class KhachHangPanel extends JPanel {
                     kh.getMaID(), kh.getTen(), kh.getSoCMND(), kh.getSoDienThoai(), kh.getEmail()
             });
         }
-        // Cập nhật text field mã KH để người dùng biết mã tiếp theo là gì
         txtMaKH.setText(IdGenerator.generateNextId("khachhang", "KH", "MaKH"));
     }
 
-    /**
-     * Chức năng Thêm Khách Hàng
-     */
     private void themKhachHang() {
         String ten = txtTen.getText();
         String cmnd = txtCMND.getText();
@@ -170,8 +149,6 @@ public class KhachHangPanel extends JPanel {
         }
 
         String newID = IdGenerator.generateNextId("khachhang", "KH", "MaKH");
-
-        // 5. Tạo đối tượng với ID vừa sinh
         KhachHang kh = new KhachHang(newID, ten, cmnd, sdt, email);
 
         if (khachHangRepo.add(kh)) {
@@ -183,9 +160,7 @@ public class KhachHangPanel extends JPanel {
                     JOptionPane.ERROR_MESSAGE);
         }
     }
-    /**
-     * Chức năng Sửa Khách Hàng
-     */
+
     private void suaKhachHang() {
         String maKH = txtMaKH.getText();
         if (maKH.isEmpty() || maKH.equals("Tự động hoặc chọn từ bảng")) {
@@ -211,9 +186,6 @@ public class KhachHangPanel extends JPanel {
         }
     }
 
-    /**
-     * Chức năng Xóa Khách Hàng
-     */
     private void xoaKhachHang() {
         String maKH = txtMaKH.getText();
         if (maKH.isEmpty() || maKH.equals("Tự động hoặc chọn từ bảng")) {
@@ -238,9 +210,6 @@ public class KhachHangPanel extends JPanel {
         }
     }
 
-    /**
-     * Dọn dẹp form nhập liệu
-     */
     private void clearForm() {
         txtMaKH.setText("Tự động hoặc chọn từ bảng");
         txtMaKH.setEditable(false);

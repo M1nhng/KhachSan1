@@ -16,10 +16,9 @@ public class DichVuPanel extends JPanel {
 
     private IDichVuRepository dichVuRepo;
 
-    // Components
     private JTable table;
     private DefaultTableModel model;
-    private JTextField txtMaDV, txtTenDV, txtGia; // Đã bỏ txtMaPhong
+    private JTextField txtMaDV, txtTenDV, txtGia; 
     private JButton btnThem, btnSua, btnXoa, btnLamMoi;
 
     private DecimalFormat vndFormat;
@@ -41,11 +40,9 @@ public class DichVuPanel extends JPanel {
     }
 
     private void initComponents() {
-        // --- Panel Form ---
         JPanel formPanel = new JPanel(new BorderLayout(10, 10));
         formPanel.setBackground(COLOR_BACKGROUND);
 
-        // Giảm xuống còn 3 hàng vì không nhập Mã Phòng nữa
         JPanel fieldsPanel = new JPanel(new GridLayout(3, 2, 5, 5));
         fieldsPanel.setBackground(COLOR_BACKGROUND);
 
@@ -53,15 +50,12 @@ public class DichVuPanel extends JPanel {
         txtTenDV = new JTextField();
         txtGia = new JTextField();
 
-        // Hàng 1
         fieldsPanel.add(CustomStyler.createStyledLabel("Mã Dịch Vụ (Auto):"));
         fieldsPanel.add(CustomStyler.createStyledTextField(txtMaDV));
 
-        // Hàng 2
         fieldsPanel.add(CustomStyler.createStyledLabel("Tên Dịch Vụ (Menu):"));
         fieldsPanel.add(CustomStyler.createStyledTextField(txtTenDV));
 
-        // Hàng 3
         fieldsPanel.add(CustomStyler.createStyledLabel("Đơn Giá (VNĐ):"));
         fieldsPanel.add(CustomStyler.createStyledTextField(txtGia));
 
@@ -69,7 +63,6 @@ public class DichVuPanel extends JPanel {
         txtMaDV.setText("Tự động tăng");
         txtMaDV.setBackground(new Color(240, 240, 240));
 
-        // Panel nút bấm
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 5));
         buttonPanel.setBackground(COLOR_BACKGROUND);
 
@@ -86,8 +79,6 @@ public class DichVuPanel extends JPanel {
         formPanel.add(fieldsPanel, BorderLayout.CENTER);
         formPanel.add(buttonPanel, BorderLayout.SOUTH);
 
-        // --- Bảng dữ liệu ---
-        // Bảng chỉ hiện Tên và Giá (Ẩn cột Mã Phòng đi vì mặc định là Menu)
         String[] columnNames = { "Mã DV", "Tên Dịch Vụ", "Đơn Giá Niêm Yết" };
         model = new DefaultTableModel(columnNames, 0) {
             @Override
@@ -126,8 +117,6 @@ public class DichVuPanel extends JPanel {
         model.setRowCount(0);
         List<DichVu> list = dichVuRepo.getAll();
         for (DichVu dv : list) {
-            // QUAN TRỌNG: Chỉ hiển thị những dòng là MENU
-            // (Bỏ qua những dòng dịch vụ lẻ tẻ của từng phòng)
             if (dv.getMaPhong() != null && dv.getMaPhong().equalsIgnoreCase("MENU")) {
                 model.addRow(new Object[] {
                         dv.getMaDV(),
@@ -150,7 +139,6 @@ public class DichVuPanel extends JPanel {
 
             double gia = Double.parseDouble(giaText);
 
-            // QUAN TRỌNG: Tự động gán MaPhong = "MENU"
             DichVu dv = new DichVu(ten, gia, "MENU");
 
             if (dichVuRepo.add(dv)) {
@@ -177,7 +165,6 @@ public class DichVuPanel extends JPanel {
             String ten = txtTenDV.getText();
             double gia = Double.parseDouble(txtGia.getText());
 
-            // Vẫn giữ nguyên MaPhong = "MENU" khi sửa
             DichVu dv = new DichVu(id, ten, gia, "MENU");
 
             if (dichVuRepo.update(dv)) {

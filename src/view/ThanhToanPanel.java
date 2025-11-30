@@ -6,7 +6,7 @@ import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.List;
 import java.util.Locale;
-import java.util.ArrayList; // Import thêm
+import java.util.ArrayList;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
@@ -29,8 +29,6 @@ public class ThanhToanPanel extends JPanel {
     private JLabel lblTongTien, lblKhachHang;
     private JButton btnThanhToan;
 
-    // Danh sách lưu tạm các dịch vụ của phòng đang chọn để tiện xóa sau khi thanh
-    // toán
     private List<DichVu> dichVuCuaPhong = new ArrayList<>();
 
     private DecimalFormat vndFormat;
@@ -81,7 +79,6 @@ public class ThanhToanPanel extends JPanel {
 
         leftPanel.add(selectionPanel, BorderLayout.NORTH);
 
-        // Không cần nút thêm dịch vụ ở đây nữa vì đã thêm bên Chi Tiết Phòng
 
         JPanel rightPanel = new JPanel(new BorderLayout(0, 0));
         rightPanel.setBackground(Color.WHITE);
@@ -154,7 +151,6 @@ public class ThanhToanPanel extends JPanel {
         }
     }
 
-    // LOGIC MỚI: Tự động load dịch vụ từ DB
     private void updateInvoiceInfo() {
         Phong p = (Phong) cboPhong.getSelectedItem();
         if (p != null) {
@@ -162,11 +158,10 @@ public class ThanhToanPanel extends JPanel {
             lblKhachHang.setText("Khách hàng: " + tenKhach);
 
             invoiceModel.setRowCount(0);
-            dichVuCuaPhong.clear(); // Xóa list tạm cũ
+            dichVuCuaPhong.clear(); 
 
             double tongTien = 0;
 
-            // 1. Tiền phòng
             double giaPhong = p.getGiaPhong();
             invoiceModel.addRow(new Object[] {
                     "Tiền thuê phòng (" + p.getLoaiPhong() + ")",
@@ -175,7 +170,6 @@ public class ThanhToanPanel extends JPanel {
             });
             tongTien += giaPhong;
 
-            // 2. Load dịch vụ từ DB
             List<DichVu> allServices = dichVuRepo.getAll();
             for (DichVu dv : allServices) {
                 if (dv.getMaPhong() != null && dv.getMaPhong().equals(p.getMaPhong())) {
@@ -185,7 +179,7 @@ public class ThanhToanPanel extends JPanel {
                             vndFormat.format(dv.getGiaDV())
                     });
                     tongTien += dv.getGiaDV();
-                    dichVuCuaPhong.add(dv); // Lưu lại để lát nữa xóa
+                    dichVuCuaPhong.add(dv); 
                 }
             }
 
@@ -199,14 +193,13 @@ public class ThanhToanPanel extends JPanel {
         if (p == null)
             return;
 
-        // Lấy tổng tiền từ nhãn (đã bao gồm phòng + dịch vụ)
         String tongTienText = lblTongTien.getText().replace("Tổng cộng: ", "").replace(" VND", "").replace(".", "")
                 .trim();
         double tongTien = 0;
         try {
             tongTien = Double.parseDouble(tongTienText);
         } catch (NumberFormatException e) {
-            tongTien = p.getGiaPhong(); // Fallback nếu lỗi
+            tongTien = p.getGiaPhong(); 
         }
 
         int confirm = JOptionPane.showConfirmDialog(this,
@@ -215,7 +208,6 @@ public class ThanhToanPanel extends JPanel {
                 "Xác nhận", JOptionPane.YES_NO_OPTION);
 
         if (confirm == JOptionPane.YES_OPTION) {
-            // --- (MỚI) BƯỚC 1: TẠO CHUỖI CHI TIẾT DỊCH VỤ ---
             StringBuilder sbDichVu = new StringBuilder();
             if (dichVuCuaPhong.isEmpty()) {
                 sbDichVu.append("Không sử dụng dịch vụ");
@@ -223,13 +215,11 @@ public class ThanhToanPanel extends JPanel {
                 for (DichVu dv : dichVuCuaPhong) {
                     sbDichVu.append(dv.getTenDV()).append(", ");
                 }
-                // Xóa dấu phẩy thừa ở cuối
                 if (sbDichVu.length() > 2) {
                     sbDichVu.setLength(sbDichVu.length() - 2);
                 }
             }
 
-            // --- (MỚI) BƯỚC 2: GHI NHẬN VÀO LỊCH SỬ (Gửi kèm danh sách dịch vụ) ---
             String msg = ThanhToan.ghiNhanThanhToan(p, tongTien, sbDichVu.toString());
             String tenKhach = (p.getKhachThue() != null) ? p.getKhachThue().getTen() : "Khách vãng lai";
 
@@ -244,7 +234,7 @@ public class ThanhToanPanel extends JPanel {
             } else {
                 System.err.println("Lỗi lưu hóa đơn!");
             }
-            // BƯỚC 3: CẬP NHẬT TRẠNG THÁI PHÒNG
+            
             p.setTrangThai(false);
             p.setKhachThue(null);
             if (!phongRepo.update(p)) {
@@ -252,15 +242,12 @@ public class ThanhToanPanel extends JPanel {
                 return;
             }
 
-            // BƯỚC 4: XÓA DỊCH VỤ KHỎI DB (Để dọn phòng cho khách mới)
-            // Dữ liệu đã được lưu an toàn trong ThanhToan.java ở Bước 2 rồi
             for (DichVu dv : dichVuCuaPhong) {
                 dichVuRepo.delete(String.valueOf(dv.getMaDV()));
             }
 
             JOptionPane.showMessageDialog(this, msg);
 
-            // Refresh lại giao diện
             loadOccupiedRooms();
             invoiceModel.setRowCount(0);
             lblTongTien.setText("Tổng cộng: 0 VND");

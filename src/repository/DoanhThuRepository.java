@@ -9,7 +9,6 @@ import java.util.HashMap;
 
 public class DoanhThuRepository {
 
-    // Hàm thêm hóa đơn mới vào CSDL
     public boolean addDoanhThu(String maPhong, String tenKhach, double soTien, String chiTietDV) {
         String sql = "INSERT INTO doanhthu (MaPhong, TenKhach, SoTien, NgayThanhToan, ChiTietDichVu) VALUES (?, ?, ?, NOW(), ?)";
 
@@ -28,10 +27,8 @@ public class DoanhThuRepository {
         }
     }
 
-    // --- (MỚI) LẤY TẤT CẢ LỊCH SỬ GIAO DỊCH CHI TIẾT ---
     public List<ThanhToan> getAll() {
         List<ThanhToan> list = new ArrayList<>();
-        // Lấy danh sách, sắp xếp ngày gần nhất lên đầu
         String sql = "SELECT * FROM doanhthu ORDER BY NgayThanhToan DESC";
 
         try (Connection conn = DatabaseConnection.getConnection();
@@ -39,13 +36,12 @@ public class DoanhThuRepository {
                 ResultSet rs = ps.executeQuery()) {
 
             while (rs.next()) {
-                // Ánh xạ dữ liệu từ ResultSet sang Model ThanhToan
                 ThanhToan tt = new ThanhToan(
                         rs.getString("MaPhong"),
                         rs.getString("TenKhach"),
                         rs.getDouble("SoTien"),
                         rs.getString("ChiTietDichVu"),
-                        rs.getString("NgayThanhToan") // Lấy chuỗi ngày giờ từ DB (MySQL DATETIME -> String)
+                        rs.getString("NgayThanhToan") 
                 );
                 list.add(tt);
             }
@@ -55,7 +51,6 @@ public class DoanhThuRepository {
         return list;
     }
 
-    // Hàm cũ (Thống kê theo tuần) - Giữ lại nếu sau này muốn vẽ biểu đồ
     public Map<Integer, Double> getDoanhThuTheoTuan(int year) {
         Map<Integer, Double> stats = new HashMap<>();
         String sql = "SELECT WEEK(NgayThanhToan, 1) as Tuan, SUM(SoTien) as TongTien " +

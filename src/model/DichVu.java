@@ -1,22 +1,20 @@
 package model;
 
 public class DichVu {
-    private int maDV; // int để khớp với auto_increment trong DB
-    private String tenDV; // Khớp tên cột TenDV
-    private double giaDV; // Khớp tên cột GiaDV
-    private String maPhong; // Bắt buộc có vì DB để Not Null
+    private int maDV;
+    private String tenDV;
+    private double giaDV;
+    private String maPhong;
 
     public DichVu() {
     }
 
-    // Constructor dùng khi thêm mới (Không cần maDV vì tự tăng)
     public DichVu(String tenDV, double giaDV, String maPhong) {
         this.tenDV = tenDV;
         this.giaDV = giaDV;
         this.maPhong = maPhong;
     }
 
-    // Constructor đầy đủ (khi đọc từ DB)
     public DichVu(int maDV, String tenDV, double giaDV, String maPhong) {
         this.maDV = maDV;
         this.tenDV = tenDV;

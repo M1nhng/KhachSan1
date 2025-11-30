@@ -34,6 +34,11 @@ public class NhanVien extends Person {
     }
 
     @Override
+    public String getVaiTro() {
+        return "Nhân Viên";
+    }
+
+    @Override
     public String toString() {
         return String.format("NV [%s] %s - %s", getMaID(), getTen(), getChucVu());
     }

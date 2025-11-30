@@ -1,7 +1,8 @@
-// Tệp: src/model/Phong.java
 package model;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Phong {
     private String maPhong;
@@ -12,7 +13,7 @@ public class Phong {
 
     private static final DecimalFormat df = new DecimalFormat("#,###");
 
-    // (MỚI) Constructor rỗng
+   
     public Phong() {
     }
 
@@ -65,8 +66,6 @@ public class Phong {
         this.KhachThue = khach;
     }
 
-    // ===== ĐẶT PHÒNG (SỬA ĐỔI) =====
-    // Sửa: Trả về String thay vì boolean và System.out.println
     public String datPhong(KhachHang khach) {
         if (trangThai) {
             return "Phong " + maPhong + " da co nguoi thue!";
@@ -79,8 +78,6 @@ public class Phong {
         return "Phong " + maPhong + " da duoc dat cho khach: " + khach.getTen();
     }
 
-    // ===== TRẢ PHÒNG (SỬA ĐỔI) =====
-    // Sửa: Trả về String thay vì boolean và System.out.println
     public String traPhong() {
         if (!trangThai) {
             return "Phong " + maPhong + " dang trong!";
@@ -90,6 +87,21 @@ public class Phong {
         this.trangThai = false;
         this.KhachThue = null;
         return "Phong " + maPhong + " da duoc tra boi " + tenKhachCu + ".";
+    }
+
+
+    private List<DichVu> dichVuList = new ArrayList<>();
+
+    public void addDichVu(DichVu dv) {
+        dichVuList.add(dv);
+    }
+
+    public void removeDichVu(DichVu dv) {
+        dichVuList.remove(dv);
+    }
+
+    public List<DichVu> getDichVuList() {
+        return dichVuList;
     }
 
     @Override

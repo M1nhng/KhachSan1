@@ -72,11 +72,8 @@ public class PhongPanel extends JPanel {
 
         add(headerPanel, BorderLayout.NORTH);
 
-        // GridLayout 5 cột, tự động xuống dòng
         roomCardsPanel = new JPanel(new GridLayout(0, 5, 15, 15));
         roomCardsPanel.setBackground(COLOR_BACKGROUND);
-
-        // Wrapper để tránh GridLayout bị kéo giãn
         JPanel wrapperPanel = new JPanel(new BorderLayout());
         wrapperPanel.setBackground(COLOR_BACKGROUND);
         wrapperPanel.add(roomCardsPanel, BorderLayout.NORTH);
@@ -192,12 +189,9 @@ public class PhongPanel extends JPanel {
         return card;
     }
 
-    // ===== HÀM ĐÃ ĐƯỢC CẬP NHẬT: HIỂN THỊ CHI TIẾT & XÓA DỊCH VỤ =====
     private void hienThiChiTietPhong(Phong phong) {
         JPanel panel = new JPanel(new BorderLayout(10, 10));
         panel.setPreferredSize(new Dimension(650, 450));
-
-        // 1. Thông tin khách
         JPanel infoPanel = new JPanel(new GridLayout(4, 1));
         infoPanel.setBorder(BorderFactory.createTitledBorder("Thông Tin Phòng & Khách Hàng"));
 
@@ -211,7 +205,6 @@ public class PhongPanel extends JPanel {
 
         panel.add(infoPanel, BorderLayout.NORTH);
 
-        // 2. Bảng dịch vụ (Thêm cột Mã DV để xử lý xóa)
         String[] cols = { "Mã DV", "Tên Dịch Vụ", "Đơn Giá" };
         DefaultTableModel tableModel = new DefaultTableModel(cols, 0) {
             @Override
@@ -222,7 +215,6 @@ public class PhongPanel extends JPanel {
         JTable table = new JTable(tableModel);
         CustomStyler.styleTable(table);
 
-        // Chỉnh độ rộng cột (Mã DV nhỏ thôi)
         table.getColumnModel().getColumn(0).setPreferredWidth(50);
         table.getColumnModel().getColumn(1).setPreferredWidth(200);
 
@@ -232,22 +224,19 @@ public class PhongPanel extends JPanel {
 
         panel.add(tablePanel, BorderLayout.CENTER);
 
-        // 3. Load dữ liệu lần đầu
         updateTableDichVu(phong, tableModel, tablePanel);
 
-        // 4. Các nút chức năng
         JButton btnAddService = CustomStyler.createStyledButton("Thêm Dịch Vụ");
         btnAddService.addActionListener(e -> {
             themDichVuVaoPhong(phong);
-            updateTableDichVu(phong, tableModel, tablePanel); // Refresh sau khi thêm
+            updateTableDichVu(phong, tableModel, tablePanel);
         });
 
-        // --- NÚT XÓA DỊCH VỤ MỚI ---
         JButton btnDeleteService = CustomStyler.createStyledButton("Xóa Dịch Vụ");
-        btnDeleteService.setBackground(new Color(231, 76, 60)); // Màu đỏ
+        btnDeleteService.setBackground(new Color(231, 76, 60));
         btnDeleteService.addActionListener(e -> {
             xoaDichVuKhoiPhong(table, tableModel);
-            updateTableDichVu(phong, tableModel, tablePanel); // Refresh sau khi xóa
+            updateTableDichVu(phong, tableModel, tablePanel);
         });
 
         JPanel btnPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
@@ -258,7 +247,6 @@ public class PhongPanel extends JPanel {
         JOptionPane.showMessageDialog(this, panel, "Chi Tiết Phòng " + phong.getMaPhong(), JOptionPane.PLAIN_MESSAGE);
     }
 
-    // --- HÀM MỚI: Load lại bảng dịch vụ & Cập nhật tiêu đề tổng tiền ---
     private void updateTableDichVu(Phong phong, DefaultTableModel model, JPanel tablePanel) {
         model.setRowCount(0);
         List<DichVu> allServices = dichVuRepo.getAll();
@@ -267,7 +255,7 @@ public class PhongPanel extends JPanel {
         for (DichVu dv : allServices) {
             if (dv.getMaPhong() != null && dv.getMaPhong().equals(phong.getMaPhong())) {
                 model.addRow(new Object[] {
-                        dv.getMaDV(), // ID để xóa
+                        dv.getMaDV(), 
                         dv.getTenDV(),
                         vndFormat.format(dv.getGiaDV())
                 });
@@ -275,7 +263,6 @@ public class PhongPanel extends JPanel {
             }
         }
 
-        // Cập nhật tiêu đề panel để hiển thị tổng tiền mới
         if (tablePanel != null) {
             TitledBorder border = (TitledBorder) tablePanel.getBorder();
             border.setTitle("Dịch Vụ Đang Sử Dụng (Tổng: " + vndFormat.format(tongTienDichVu) + ")");
@@ -283,7 +270,6 @@ public class PhongPanel extends JPanel {
         }
     }
 
-    // --- HÀM MỚI: Xóa dịch vụ ---
     private void xoaDichVuKhoiPhong(JTable table, DefaultTableModel model) {
         int row = table.getSelectedRow();
         if (row == -1) {
@@ -291,7 +277,7 @@ public class PhongPanel extends JPanel {
             return;
         }
 
-        int maDV = (int) model.getValueAt(row, 0); // Lấy ID từ cột 0
+        int maDV = (int) model.getValueAt(row, 0);
         String tenDV = (String) model.getValueAt(row, 1);
 
         int confirm = JOptionPane.showConfirmDialog(this,
@@ -323,7 +309,6 @@ public class PhongPanel extends JPanel {
         }
 
         JComboBox<DichVu> combo = new JComboBox<>(menuList.toArray(new DichVu[0]));
-        // Renderer cho ComboBox đẹp hơn
         combo.setRenderer(new DefaultListCellRenderer() {
             @Override
             public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected,

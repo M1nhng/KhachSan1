@@ -11,13 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PhongRepository implements IPhongRepository {
-
-    // (MỚI) Không cần IKhachHangRepository nữa
-    // private IKhachHangRepository khachHangRepo;
-
-    // (MỚI) Dùng constructor rỗng
     public PhongRepository() {
-        // Không cần khởi tạo repo khác
+
     }
 
     private Phong mapResultSetToPhong(ResultSet rs) throws SQLException {
@@ -27,61 +22,54 @@ public class PhongRepository implements IPhongRepository {
         p.setGiaPhong(rs.getDouble("GiaPhong"));
         p.setTrangThai(rs.getBoolean("TrangThai"));
 
-        // (MỚI) Lấy thông tin KhachHang từ JOIN
         String maKH = rs.getString("MaKH");
         if (maKH != null) {
-            // Tạo đối tượng KhachHang từ các cột đã JOIN
             KhachHang kh = new KhachHang();
             kh.setMaID(maKH);
-            kh.setTen(rs.getString("Ten")); // Lấy từ bảng khachhang
-            kh.setSoCMND(rs.getString("SoCMND")); // Lấy từ bảng khachhang
-            kh.setSoDienThoai(rs.getString("SoDienThoai")); // Lấy từ bảng khachhang
-            kh.setEmail(rs.getString("Email")); // Lấy từ bảng khachhang
+            kh.setTen(rs.getString("Ten"));
+            kh.setSoCMND(rs.getString("SoCMND"));
+            kh.setSoDienThoai(rs.getString("SoDienThoai"));
+            kh.setEmail(rs.getString("Email"));
 
             p.setKhachThue(kh);
         }
         return p;
     }
 
-    // --- HÀM MỚI: Tự động tạo phòng ảo "MENU" để chứa dịch vụ gốc ---
-    public void khoiTaoPhongChoMenu() {
-        // 1. Kiểm tra xem phòng MENU đã tồn tại chưa
-        String checkSql = "SELECT MaPhong FROM phong WHERE MaPhong = 'MENU'";
-        try (Connection conn = DatabaseConnection.getConnection();
-                PreparedStatement psCheck = conn.prepareStatement(checkSql);
-                ResultSet rs = psCheck.executeQuery()) {
+    // public void khoiTaoPhongChoMenu() {
+    //     // String checkSql = "SELECT MaPhong FROM phong WHERE MaPhong = 'MENU'";
+    //     // try (Connection conn = DatabaseConnection.getConnection();
+    //     //         PreparedStatement psCheck = conn.prepareStatement(checkSql);
+    //     //         ResultSet rs = psCheck.executeQuery()) {
 
-            if (rs.next()) {
-                // Đã có phòng MENU rồi thì không làm gì cả
-                return;
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+    //     //     if (rs.next()) {
+    //     //         return;
+    //     //     }
+    //     // } catch (SQLException e) {
+    //     //     e.printStackTrace();
+    //     // }
 
-        // 2. Nếu chưa có, tiến hành tạo mới
-        String insertSql = "INSERT INTO phong (MaPhong, LoaiPhong, GiaPhong, TrangThai) VALUES (?, ?, ?, ?)";
-        try (Connection conn = DatabaseConnection.getConnection();
-                PreparedStatement psInsert = conn.prepareStatement(insertSql)) {
+    //     String insertSql = "INSERT INTO phong (MaPhong, LoaiPhong, GiaPhong, TrangThai) VALUES (?, ?, ?, ?)";
+    //     try (Connection conn = DatabaseConnection.getConnection();
+    //             PreparedStatement psInsert = conn.prepareStatement(insertSql)) {
 
-            psInsert.setString(1, "MENU");
-            psInsert.setString(2, "KHO_DICH_VU"); // Loại phòng
-            psInsert.setDouble(3, 0); // Giá 0
-            psInsert.setBoolean(4, false); // Trạng thái trống
+    //         psInsert.setString(1, "MENU");
+    //         psInsert.setString(2, "KHO_DICH_VU");   
+    //         psInsert.setDouble(3, 0); 
+    //         psInsert.setBoolean(4, false); 
 
-            psInsert.executeUpdate();
-            System.out.println("Đã tự động khởi tạo phòng 'MENU' thành công!");
+    //         psInsert.executeUpdate();
+    //         System.out.println("Đã tự động khởi tạo phòng 'MENU' thành công!");
 
-        } catch (SQLException e) {
-            System.err.println("Lỗi khi khởi tạo phòng MENU: " + e.getMessage());
-            e.printStackTrace();
-        }
-    }
+    //     } catch (SQLException e) {
+    //         System.err.println("Lỗi khi khởi tạo phòng MENU: " + e.getMessage());
+    //         e.printStackTrace();
+    //     }
+    // }
 
     @Override
     public List<Phong> getAll() {
         List<Phong> dsPhong = new ArrayList<>();
-        // (MỚI) Dùng LEFT JOIN
         String sql = "SELECT p.*, kh.Ten, kh.SoCMND, kh.SoDienThoai, kh.Email " +
                 "FROM phong p " +
                 "LEFT JOIN khachhang kh ON p.MaKH = kh.MaKH";
@@ -91,7 +79,6 @@ public class PhongRepository implements IPhongRepository {
                 ResultSet rs = ps.executeQuery()) {
 
             while (rs.next()) {
-                // mapResultSetToPhong bây giờ đã bao gồm cả việc map KhachHang
                 dsPhong.add(mapResultSetToPhong(rs));
             }
         } catch (SQLException e) {
@@ -102,7 +89,6 @@ public class PhongRepository implements IPhongRepository {
 
     @Override
     public Phong getById(String id) {
-        // (MỚI) Dùng LEFT JOIN
         String sql = "SELECT p.*, kh.Ten, kh.SoCMND, kh.SoDienThoai, kh.Email " +
                 "FROM phong p " +
                 "LEFT JOIN khachhang kh ON p.MaKH = kh.MaKH " +
@@ -121,8 +107,6 @@ public class PhongRepository implements IPhongRepository {
         return null;
     }
 
-    // ... (Hàm add, update, delete giữ nguyên như phiên bản trước) ...
-
     @Override
     public boolean add(Phong p) {
         String sql = "INSERT INTO phong (MaPhong, LoaiPhong, GiaPhong, TrangThai) VALUES (?, ?, ?, ?)";
@@ -132,7 +116,7 @@ public class PhongRepository implements IPhongRepository {
             ps.setString(1, p.getMaPhong());
             ps.setString(2, p.getLoaiPhong());
             ps.setDouble(3, p.getGiaPhong());
-            ps.setBoolean(4, false); // Mặc định là trống
+            ps.setBoolean(4, false);    
 
             return ps.executeUpdate() > 0;
         } catch (SQLException e) {
