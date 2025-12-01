@@ -28,7 +28,7 @@ KhachSan1/
 
 Dự án cuối kỳ môn **Lập trình Hướng đối tượng (OOP)**
 
-Link: [Google Docs](https://docs.google.com/document/d/1HDP6sxMD3U_8rL1wpECVtyhApcVY33IQFW-5Mb87Rts/edit?tab=t.0)
+Link: [Google Docs](https://docs.google.com/document/d/1DR_btU3LCQpzpjg7G9m_pDIPDBy0PhfCjxWSnaRKsFs/edit?tab=t.0#heading=h.ehtxjpe6jiou)
 
 ## 📄 License
 
