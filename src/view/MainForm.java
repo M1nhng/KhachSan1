@@ -26,6 +26,7 @@ public class MainForm extends JFrame {
     private IDichVuRepository dichVuRepo;
 
     public MainForm() {
+        // 1. Khởi tạo các Repository (Kết nối thực tế đến Database)
         khachHangRepo = new KhachHangRepository();
         nhanVienRepo = new NhanVienRepository();
         phongRepo = new PhongRepository();
@@ -65,9 +66,11 @@ public class MainForm extends JFrame {
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
+            // 1. Tạo và hiện cửa sổ Đăng nhập trước
             LoginView loginView = new LoginView();
             loginView.setLoginHandler((username, password, remember) -> {
                 String passStr = new String(password);
+                // Kiểm tra mật khẩu cứng (Hardcoded)
                 if (username.equals("admin") && passStr.equals("1234")) {
                     loginView.dispose();
                     new MainForm().setVisible(true);
