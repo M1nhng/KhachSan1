@@ -1,8 +1,7 @@
-//khai bao va cau hinh lop (class defination)
 package view;
 
-import javax.swing.*;// tao giao dien (Jframe, Jpanel ,Jbutton..)
-import javax.swing.border.Border; // thu vien tao vien
+import javax.swing.*;
+import javax.swing.border.Border; 
 import java.awt.*; //(layout , color , font..)
 import java.util.function.Consumer;// Nhập Interface Consumer để xử lý sự kiện (dùng cho nút Thoát)
 
@@ -27,8 +26,7 @@ public class LoginView extends JFrame {
         setSize(760, 460);// Đặt kích thước: Rộng 760, Cao 460
         setLocationRelativeTo(null);// Đặt cửa sổ ra giữa màn hình
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setResizable(false);// Không cho phép người dùng thay đổi kích thước cửa sổ
-
+        setResizable(false);
         cardLayout = new CardLayout();
         container = new JPanel(cardLayout);
         container.setBackground(new Color(246, 248, 250));//mau xam nhat
